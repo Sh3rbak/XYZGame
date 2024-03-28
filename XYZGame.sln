@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34714.143
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ApplesGame", "ApplesGame\ApplesGame.vcxproj", "{FB5515C8-A0CF-4631-8997-D159ACEDB329}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FB5515C8-A0CF-4631-8997-D159ACEDB329}.Debug|x64.ActiveCfg = Debug|x64
+		{FB5515C8-A0CF-4631-8997-D159ACEDB329}.Debug|x64.Build.0 = Debug|x64
+		{FB5515C8-A0CF-4631-8997-D159ACEDB329}.Debug|x86.ActiveCfg = Debug|Win32
+		{FB5515C8-A0CF-4631-8997-D159ACEDB329}.Debug|x86.Build.0 = Debug|Win32
+		{FB5515C8-A0CF-4631-8997-D159ACEDB329}.Release|x64.ActiveCfg = Release|x64
+		{FB5515C8-A0CF-4631-8997-D159ACEDB329}.Release|x64.Build.0 = Release|x64
+		{FB5515C8-A0CF-4631-8997-D159ACEDB329}.Release|x86.ActiveCfg = Release|Win32
+		{FB5515C8-A0CF-4631-8997-D159ACEDB329}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D1D79598-F60E-4099-9184-879719BC0AB2}
+	EndGlobalSection
+EndGlobal
