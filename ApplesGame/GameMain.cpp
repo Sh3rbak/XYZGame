@@ -9,6 +9,9 @@ const float PLAYER_SIZE = 20.f;
 const float ACCELERATION = 10.f;
 const int NUM_APPLES = 20;
 const float APPLE_SIZE = 20.f;
+const int NUM_ROCKS = 5;
+const float ROCK_SIZE = 20.f;
+const float PAUSE_TIME = 3.f;
 
 int main()
 {
@@ -31,7 +34,6 @@ int main()
     bool isAppleEaten[NUM_APPLES];
     sf::CircleShape applesShape[NUM_APPLES];
 
-
     for (int i = 0; i < NUM_APPLES; ++i)
     {
         isAppleEaten[i] = false;
@@ -44,7 +46,25 @@ int main()
         applesShape[i].setPosition(appleX[i], appleY[i]);
     }
 
+    float rockX[NUM_ROCKS];
+    float rockY[NUM_ROCKS];
+    sf::CircleShape rocksShape[NUM_ROCKS];
+
+    for (int i = 0; i < NUM_ROCKS; ++i)
+    {
+        rockX[i] = ROCK_SIZE + rand() / (float)RAND_MAX * (SCREEN_WIGHT - ROCK_SIZE);
+        rockY[i] = ROCK_SIZE + rand() / (float)RAND_MAX * (SCREEN_HEIGHT - ROCK_SIZE);
+
+        rocksShape[i].setRadius(ROCK_SIZE / 2.f);
+        rocksShape[i].setFillColor(sf::Color::Magenta);
+        rocksShape[i].setOrigin(ROCK_SIZE / 2.f, ROCK_SIZE / 2.f);
+        rocksShape[i].setPosition(rockX[i], rockY[i]);
+    }
+
     int numEatenApples = 0;
+
+    float gameOverTime = 0;
+    bool isGameOver = false;
 
     sf::Clock gameClock;
     float lastTime = gameClock.getElapsedTime().asSeconds();
@@ -62,82 +82,119 @@ int main()
                 window.close();
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+        if (!isGameOver)
         {
-            playerDirection = 0;
-        }
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-        {
-            playerDirection = 1;
-        }
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-        {
-            playerDirection = 2;
-        }
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-        {
-            playerDirection = 3;
-        }
 
-        playerSpeed += ACCELERATION * deltaTime;;
 
-        if (playerDirection == 0)
-        {
-            playerX += playerSpeed * deltaTime;
-        }
-        else if (playerDirection == 1)
-        {
-            playerY -= playerSpeed * deltaTime;
-        }
-        else if (playerDirection == 2)
-        {
-            playerX -= playerSpeed * deltaTime;
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+            {
+                playerDirection = 0;
+            }
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+            {
+                playerDirection = 1;
+            }
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+            {
+                playerDirection = 2;
+            }
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+            {
+                playerDirection = 3;
+            }
+
+            playerSpeed += ACCELERATION * deltaTime;;
+
+            if (playerDirection == 0)
+            {
+                playerX += playerSpeed * deltaTime;
+            }
+            else if (playerDirection == 1)
+            {
+                playerY -= playerSpeed * deltaTime;
+            }
+            else if (playerDirection == 2)
+            {
+                playerX -= playerSpeed * deltaTime;
+            }
+            else
+            {
+                playerY += playerSpeed * deltaTime;
+            }
+
+            if (((playerX - PLAYER_SIZE/2.f) < 0) || ((playerY - PLAYER_SIZE/2.f) < 0) ||
+                ((playerX + PLAYER_SIZE/2.f) > SCREEN_WIGHT) || ((playerY + PLAYER_SIZE/2.f) > SCREEN_HEIGHT))
+            {
+                isGameOver = true;
+            }
+
+            /*for (int i = 0; i < NUM_APPLES; ++i)
+            {
+                if (!isAppleEaten[i])
+                {
+                    float deltaX = fabs(playerX - appleX[i]);
+                    float deltaY = fabs(playerY - appleY[i]);
+                    if (deltaX <= (APPLE_SIZE + PLAYER_SIZE) / 2.f &&
+                        deltaY <= (APPLE_SIZE + PLAYER_SIZE) / 2.f)
+                    {
+                        isAppleEaten[i] = true;
+                        ++numEatenApples;
+                    }
+                }
+            }*/
+            for (int i = 0; i < NUM_APPLES; ++i)
+            {
+                if (!isAppleEaten[i])
+                {
+                    float deltaX = (playerX - appleX[i]) * (playerX - appleX[i]);
+                    float deltaY = (playerY - appleY[i]) * (playerY - appleY[i]);
+                    float distance = deltaX + deltaY;
+                    if (distance <= (APPLE_SIZE + PLAYER_SIZE) * (APPLE_SIZE + PLAYER_SIZE) / 4)
+                    {
+                        //isAppleEaten[i] = true;
+                        ++numEatenApples;
+                        appleX[i] = APPLE_SIZE + rand() / (float)RAND_MAX * (SCREEN_WIGHT - APPLE_SIZE);
+                        appleY[i] = APPLE_SIZE + rand() / (float)RAND_MAX * (SCREEN_HEIGHT - APPLE_SIZE);
+                        applesShape[i].setPosition(appleX[i], appleY[i]);
+                    }
+                }
+            }
+            for (int i = 0; i < NUM_ROCKS; ++i)
+            {
+                float deltaX = (playerX - rockX[i]) * (playerX - rockX[i]);
+                float deltaY = (playerY - rockY[i]) * (playerY - rockY[i]);
+                float distance = deltaX + deltaY;
+                if (distance <= (ROCK_SIZE + PLAYER_SIZE) * (ROCK_SIZE + PLAYER_SIZE) / 4)
+                {
+                    isGameOver = true;
+                }
+            }
         }
         else
         {
-            playerY += playerSpeed * deltaTime;
-        }
-
-        if (((playerX - PLAYER_SIZE/2.f) < 0) || ((playerY - PLAYER_SIZE/2.f) < 0) ||
-            ((playerX + PLAYER_SIZE/2.f) > SCREEN_WIGHT) || ((playerY + PLAYER_SIZE/2.f) > SCREEN_HEIGHT))
-        {
-            window.close();
-            break;
-        }
-
-        /*for (int i = 0; i < NUM_APPLES; ++i)
-        {
-            if (!isAppleEaten[i])
+            gameOverTime += deltaTime;
+            if (gameOverTime >= PAUSE_TIME)
             {
-                float deltaX = fabs(playerX - appleX[i]);
-                float deltaY = fabs(playerY - appleY[i]);
-                if (deltaX <= (APPLE_SIZE + PLAYER_SIZE) / 2.f &&
-                    deltaY <= (APPLE_SIZE + PLAYER_SIZE) / 2.f)
+                gameOverTime = 0;
+                isGameOver = false;
+                playerX = SCREEN_WIGHT / 2.f;
+                playerY = SCREEN_HEIGHT / 2.f;
+                playerSpeed = INITIAL_SPEED;
+                playerDirection = 0;
+                numEatenApples = 0;
+                for (int i = 0; i < NUM_APPLES; ++i)
                 {
-                    isAppleEaten[i] = true;
-                    ++numEatenApples;
+                    appleX[i] = APPLE_SIZE + rand() / (float)RAND_MAX * (SCREEN_WIGHT - APPLE_SIZE);
+                    appleY[i] = APPLE_SIZE + rand() / (float)RAND_MAX * (SCREEN_HEIGHT - APPLE_SIZE);
+                    applesShape[i].setPosition(appleX[i], appleY[i]);
+                }
+                for (int i = 0; i < NUM_ROCKS; ++i)
+                {
+                    rockX[i] = ROCK_SIZE + rand() / (float)RAND_MAX * (SCREEN_WIGHT - ROCK_SIZE);
+                    rockY[i] = ROCK_SIZE + rand() / (float)RAND_MAX * (SCREEN_HEIGHT - ROCK_SIZE);
+                    rocksShape[i].setPosition(rockX[i], rockY[i]);
                 }
             }
-        }*/
-        for (int i = 0; i < NUM_APPLES; ++i)
-        {
-            if (!isAppleEaten[i])
-            {
-                float deltaX = (playerX - appleX[i]) * (playerX - appleX[i]);
-                float deltaY = (playerY - appleY[i]) * (playerY - appleY[i]);
-                float distance = deltaX + deltaY;
-                if (distance <= (APPLE_SIZE + PLAYER_SIZE) * (APPLE_SIZE + PLAYER_SIZE) / 4)
-                {
-                    isAppleEaten[i] = true;
-                    ++numEatenApples;
-                }
-            }
-        }
-
-        if (numEatenApples == NUM_APPLES)
-        {
-            window.close();
-            break;
         }
 
         window.clear();
@@ -149,6 +206,10 @@ int main()
             {
                 window.draw(applesShape[i]);
             }
+        }
+        for (int i = 0; i < NUM_ROCKS; ++i)
+        {
+            window.draw(rocksShape[i]);
         }
         window.display();
     }
