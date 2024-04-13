@@ -18,6 +18,8 @@ int main()
 
     while (window.isOpen())
     {
+        sf::sleep(sf::milliseconds(16));
+
         float currentTime = gameClock.getElapsedTime().asSeconds();
         float deltaTime = currentTime - lastTime;
         lastTime = currentTime;

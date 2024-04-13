@@ -8,9 +8,10 @@ namespace ApplesGame
     struct Apple
     {
         Position2D applePostion;
-        sf::CircleShape applesShape;
+        sf::Sprite sprite;
     };
 
-    void InitApples(Apple& apple);
+    void InitApple(Apple& apple, sf::Texture& texture);
+    void DrawApple(Apple& apple, sf::RenderWindow& window);
 }
 

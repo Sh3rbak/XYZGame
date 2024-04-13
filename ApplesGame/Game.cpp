@@ -1,25 +1,41 @@
 #include "Game.h"
+#include <string>
+#include <cassert>
 
 namespace ApplesGame
 {
     void RestartGame(Game& game)
     {
-        InitPlayer(game.player);
+        InitPlayer(game.player, game.playerTexture);
         for (int i = 0; i < NUM_APPLES; ++i)
         {
-            InitApples(game.apples[i]);
+            InitApple(game.apples[i], game.appleTexture);
         }
         for (int i = 0; i < NUM_ROCKS; ++i)
         {
-            InitRocks(game.rocks[i]);
+            InitRock(game.rocks[i], game.rockTexture);
         }
         game.numEatenApples = 0;
         game.gameFinishTime = 0;
         game.isGameFinished = false;
     }
 
+    void InitSound(sf::SoundBuffer& soundBuf, sf::Sound& sound, const std::string& path)
+    {
+        assert(soundBuf.loadFromFile(path));
+        sound.setBuffer(soundBuf);
+        sound.setVolume(50.f);
+    }
+
     void InitGame(Game& game)
     {
+        assert(game.playerTexture.loadFromFile(RESOURCES_PATH + "\\Player.png"));
+        assert(game.appleTexture.loadFromFile(RESOURCES_PATH + "\\Apple.png"));
+        assert(game.rockTexture.loadFromFile(RESOURCES_PATH + "\\Rock.png"));
+
+        InitSound(game.deadPlayerBuf, game.deadPlayerSound, RESOURCES_PATH + "\\Death.wav");
+        InitSound(game.eatAppleBuf, game.eatAppleSound, RESOURCES_PATH + "\\AppleEat.wav");
+
         RestartGame(game);
     }
 
@@ -43,34 +59,7 @@ namespace ApplesGame
             {
                 game.player.playerDirection = PlayerDirection::Down;
             }
-
-            switch (game.player.playerDirection)
-            {
-            case PlayerDirection::Right:
-            {
-                game.player.playerPostion.x += game.player.playerSpeed * deltaTime;
-                break;
-            }
-            case PlayerDirection::Up:
-            {
-                game.player.playerPostion.y -= game.player.playerSpeed * deltaTime;
-                break;
-            }
-            case PlayerDirection::Left:
-            {
-                game.player.playerPostion.x -= game.player.playerSpeed * deltaTime;
-                break;
-            }
-            case PlayerDirection::Down:
-            {
-                game.player.playerPostion.y += game.player.playerSpeed * deltaTime;
-                break;
-            }
-            default:
-                break;
-            }
-
-            game.player.playerShape.setPosition(game.player.playerPostion.x, game.player.playerPostion.y);
+            UpdatePlayer(game.player, deltaTime);
 
             if (((game.player.playerPostion.x - PLAYER_SIZE / 2.f) < 0) ||
                 ((game.player.playerPostion.y - PLAYER_SIZE / 2.f) < 0) ||
@@ -78,6 +67,7 @@ namespace ApplesGame
                 ((game.player.playerPostion.y + PLAYER_SIZE / 2.f) > SCREEN_HEIGHT))
             {
                 game.isGameFinished = true;
+                game.deadPlayerSound.play();
             }
 
             for (int i = 0; i < NUM_APPLES; ++i)
@@ -88,20 +78,17 @@ namespace ApplesGame
                     game.player.playerSpeed += ACCELERATION;
                     ++game.numEatenApples;
                     game.apples[i].applePostion = GetRandomPostionInScreen(SCREEN_WIGHT, SCREEN_HEIGHT);
-                    game.apples[i].applesShape.setPosition(game.apples[i].applePostion.x, game.apples[i].applePostion.y);
+                    game.apples[i].sprite.setPosition(game.apples[i].applePostion.x, game.apples[i].applePostion.y);
+                    game.eatAppleSound.play();
                 }
             }
             for (int i = 0; i < NUM_ROCKS; ++i)
             {
-                float deltaX = (game.player.playerPostion.x - game.rocks[i].rockPosition.x) *
-                    (game.player.playerPostion.x - game.rocks[i].rockPosition.x);
-                float deltaY = (game.player.playerPostion.y - game.rocks[i].rockPosition.y) *
-                    (game.player.playerPostion.y - game.rocks[i].rockPosition.y);
-                float distance = deltaX + deltaY;
                 if (isCirclesCollide(game.player.playerPostion, PLAYER_SIZE / 2.f,
                     game.rocks[i].rockPosition, ROCK_SIZE / 2.f))
                 {
                     game.isGameFinished = true;
+                    game.deadPlayerSound.play();
                 }
             }
         }
@@ -117,15 +104,14 @@ namespace ApplesGame
 
     void DrawGame(Game& game, sf::RenderWindow& window)
     {
-
-        window.draw(game.player.playerShape);
+        DrawPlayer(game.player, window);
         for (int i = 0; i < NUM_APPLES; ++i)
         {
-            window.draw(game.apples[i].applesShape);
+            DrawApple(game.apples[i], window);
         }
         for (int i = 0; i < NUM_ROCKS; ++i)
         {
-            window.draw(game.rocks[i].rocksShape);
+            DrawRock(game.rocks[i], window);
         }
     }
 

@@ -3,7 +3,7 @@
 
 namespace ApplesGame
 {
-	const std::string RESOURSE_PATH = "Resourse/";
+	const std::string RESOURCES_PATH = "Resources/";
 	const int SCREEN_WIGHT = 1240;
 	const int SCREEN_HEIGHT = 720;
 	const float INITIAL_SPEED = 100.f;

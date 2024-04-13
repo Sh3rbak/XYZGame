@@ -9,8 +9,10 @@ namespace ApplesGame
     {
         Position2D rockPosition;
         sf::CircleShape rocksShape;
+        sf::Sprite sprite;
     };
 
-    void InitRocks(Rock& rock);
+    void InitRock(Rock& rock, sf::Texture& texture);
+    void DrawRock(Rock& rock, sf::RenderWindow& window);
 }
 
