@@ -7,11 +7,13 @@ namespace ApplesGame
 {
     struct Apple
     {
-        Position2D applePostion;
+        Position2D position;
         sf::Sprite sprite;
     };
 
-    void InitApple(Apple& apple, sf::Texture& texture);
+    void InitApple(Apple& apple, const sf::Texture& texture);
     void DrawApple(Apple& apple, sf::RenderWindow& window);
+    Circle GetAppleCollider(const Apple& apple);
+    void SetApplePosition(Apple& apple, const Position2D& position);
 }
 

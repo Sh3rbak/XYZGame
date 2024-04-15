@@ -15,12 +15,18 @@ namespace ApplesGame
 
     struct Player
     {
-        Position2D playerPostion;
-        float playerSpeed = INITIAL_SPEED;
-        PlayerDirection playerDirection = PlayerDirection::Right;
+        Position2D position;
+        float speed = INITIAL_SPEED;
+        PlayerDirection direction = PlayerDirection::Right;
         sf::Sprite sprite;
     };
 
+    void SetPlayerPosition(Player& player, const Position2D& position);
+    void SetPlayerSpeed(Player& player, const float speed);
+    float GetPlayerSpeed(const Player& player);
+    Circle GetPlayerCollider(const Player& player);
+    bool HasPlayerCollisionWithScreenBorder(const Player& player);
+    void SetPlayerDirection(Player& player, PlayerDirection direction);
     void InitPlayer(Player& player, sf::Texture& texture);
     void UpdatePlayer(Player& player, const float deltaTime);
     void DrawPlayer(Player& player, sf::RenderWindow& window);

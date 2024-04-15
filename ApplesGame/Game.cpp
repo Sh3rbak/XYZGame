@@ -4,21 +4,87 @@
 
 namespace ApplesGame
 {
-    void RestartGame(Game& game)
+    void StartPlayingState(Game& game)
     {
-        InitPlayer(game.player, game.playerTexture);
+        SetPlayerPosition(game.player, { SCREEN_WIDHT / 2.f, SCREEN_HEIGHT / 2.f });
+        SetPlayerSpeed(game.player, INITIAL_SPEED);
+        SetPlayerDirection(game.player, PlayerDirection::Right);
+
         for (int i = 0; i < NUM_APPLES; ++i)
         {
-            InitApple(game.apples[i], game.appleTexture);
+            SetApplePosition(game.apples[i], GetRandomPostionInRectangle(game.screenRect));
         }
+
         for (int i = 0; i < NUM_ROCKS; ++i)
         {
-            InitRock(game.rocks[i], game.rockTexture);
+            SetRockPosition(game.rocks[i], GetRandomPostionInRectangle(game.screenRect));
         }
+
         game.numEatenApples = 0;
         game.gameFinishTime = 0;
         game.isGameFinished = false;
     }
+
+    void UpdatePlayingState(Game& game, float deltaTime)
+    {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+        {
+            SetPlayerDirection(game.player, PlayerDirection::Right);
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+        {
+            SetPlayerDirection(game.player, PlayerDirection::Up);
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+        {
+            SetPlayerDirection(game.player, PlayerDirection::Left);
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+        {
+            SetPlayerDirection(game.player, PlayerDirection::Down);
+        }
+        UpdatePlayer(game.player, deltaTime);
+
+        if (HasPlayerCollisionWithScreenBorder(game.player))
+        {
+            StartGameoverState(game);
+        }
+
+        for (int i = 0; i < NUM_APPLES; ++i)
+        {
+            if (DoShapesCollide(GetPlayerCollider(game.player), GetAppleCollider(game.apples[i])))
+            {
+                SetPlayerSpeed(game.player, GetPlayerSpeed(game.player) + ACCELERATION);
+                ++game.numEatenApples;
+                SetApplePosition(game.apples[i], GetRandomPostionInRectangle(game.screenRect));
+                game.eatAppleSound.play();
+            }
+        }
+        for (int i = 0; i < NUM_ROCKS; ++i)
+        {
+            if (DoShapesCollide(GetRockCollider(game.rocks[i]), GetPlayerCollider(game.player)))
+            {
+                StartGameoverState(game);
+            }
+        }
+    }
+
+    void StartGameoverState(Game& game)
+    {
+        game.isGameFinished = true;
+        game.gameFinishTime = 0.f;
+        game.deadPlayerSound.play();
+    }
+
+    void UpdateGameoverState(Game& game, float deltaTime)
+    {
+        game.gameFinishTime += deltaTime;
+        if (game.gameFinishTime >= PAUSE_TIME)
+        {
+            StartPlayingState(game);
+        }
+    }
+    
 
     void InitSound(sf::SoundBuffer& soundBuf, sf::Sound& sound, const std::string& path)
     {
@@ -36,70 +102,37 @@ namespace ApplesGame
         InitSound(game.deadPlayerBuf, game.deadPlayerSound, RESOURCES_PATH + "\\Death.wav");
         InitSound(game.eatAppleBuf, game.eatAppleSound, RESOURCES_PATH + "\\AppleEat.wav");
 
-        RestartGame(game);
+        assert(game.font.loadFromFile(RESOURCES_PATH + "\\Fonts\\Roboto-Bold.ttf"));
+        InitUIGame(game.uiGame, game.font);
+
+        game.screenRect = { 0.f, 0.f , SCREEN_WIDHT, SCREEN_HEIGHT };
+
+        InitPlayer(game.player, game.playerTexture);
+
+        for (int i = 0; i < NUM_APPLES; ++i)
+        {
+            InitApple(game.apples[i], game.appleTexture);
+        }
+
+        for (int i = 0; i < NUM_ROCKS; ++i)
+        {
+            InitRock(game.rocks[i], game.rockTexture);
+        }
+
+        StartPlayingState(game);
     }
 
     void UpdateGame(Game& game, float deltaTime)
     {
         if (!game.isGameFinished)
         {
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-            {
-                game.player.playerDirection = PlayerDirection::Right;
-            }
-            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-            {
-                game.player.playerDirection = PlayerDirection::Up;
-            }
-            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-            {
-                game.player.playerDirection = PlayerDirection::Left;
-            }
-            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-            {
-                game.player.playerDirection = PlayerDirection::Down;
-            }
-            UpdatePlayer(game.player, deltaTime);
-
-            if (((game.player.playerPostion.x - PLAYER_SIZE / 2.f) < 0) ||
-                ((game.player.playerPostion.y - PLAYER_SIZE / 2.f) < 0) ||
-                ((game.player.playerPostion.x + PLAYER_SIZE / 2.f) > SCREEN_WIGHT) ||
-                ((game.player.playerPostion.y + PLAYER_SIZE / 2.f) > SCREEN_HEIGHT))
-            {
-                game.isGameFinished = true;
-                game.deadPlayerSound.play();
-            }
-
-            for (int i = 0; i < NUM_APPLES; ++i)
-            {
-                if (isCirclesCollide(game.player.playerPostion, PLAYER_SIZE / 2.f,
-                    game.apples[i].applePostion, APPLE_SIZE / 2.f))
-                {
-                    game.player.playerSpeed += ACCELERATION;
-                    ++game.numEatenApples;
-                    game.apples[i].applePostion = GetRandomPostionInScreen(SCREEN_WIGHT, SCREEN_HEIGHT);
-                    game.apples[i].sprite.setPosition(game.apples[i].applePostion.x, game.apples[i].applePostion.y);
-                    game.eatAppleSound.play();
-                }
-            }
-            for (int i = 0; i < NUM_ROCKS; ++i)
-            {
-                if (isCirclesCollide(game.player.playerPostion, PLAYER_SIZE / 2.f,
-                    game.rocks[i].rockPosition, ROCK_SIZE / 2.f))
-                {
-                    game.isGameFinished = true;
-                    game.deadPlayerSound.play();
-                }
-            }
+            UpdatePlayingState(game, deltaTime);
         }
         else
         {
-            game.gameFinishTime += deltaTime;
-            if (game.gameFinishTime >= PAUSE_TIME)
-            {
-                RestartGame(game);
-            }
+            UpdateGameoverState(game, deltaTime);
         }
+        UpdateUIGame(game.uiGame, game.numEatenApples, game.gameFinishTime);
     }
 
     void DrawGame(Game& game, sf::RenderWindow& window)
@@ -113,6 +146,7 @@ namespace ApplesGame
         {
             DrawRock(game.rocks[i], window);
         }
+        DrawUIGame(game.uiGame, window, game.isGameFinished);
     }
 
     void DeinializeGame(Game& game)

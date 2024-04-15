@@ -1,4 +1,5 @@
 #pragma once
+#include <SFML/Graphics.hpp>
 
 namespace sf
 {
@@ -15,15 +16,28 @@ namespace ApplesGame
 
     typedef Vector2D Position2D;
 
-    Position2D GetRandomPostionInScreen(const float screenWidht, const float screenHeight);
+    struct Rectangle
+    {
+        Position2D position;
+        Vector2D size;
+    };
 
-    bool isRectanglesCollide(Position2D rect1Position, Vector2D rect1Size,
-        Position2D rect2Position, Vector2D rect2Size);
+    struct Circle
+    {
+        Position2D position;
+        float radius;
+    };
 
-    bool isCirclesCollide(Position2D circle1Position, const float circle1Radius,
-        Position2D circle2Position, const float circle2Radius);
+    bool DoShapesCollide(const Rectangle& rect1, const Rectangle& rect2);
+    bool DoShapesCollide(const Circle& circle1, const Circle& circle2);
+    bool DoShapesCollide(const Rectangle& rect, const Circle& circle);
+
+    Position2D GetRandomPostionInRectangle(const Rectangle& rect);
 
     void SetSpriteSize(sf::Sprite& sprite, const float desiredWidth, const float desiredHeight);
     void SetSpriteRelativeOrigin(sf::Sprite& sprite, const float originX, const float originY);
+    int GetRandomValue(int minValue, int maxValue);
+
+    sf::Vector2f GetTextOrigin(const sf::Text& text, const Vector2D& relativePosition);
 }
 
