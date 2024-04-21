@@ -26,8 +26,8 @@ namespace ApplesGame
     float GetPlayerSpeed(const Player& player);
     Circle GetPlayerCollider(const Player& player);
     bool HasPlayerCollisionWithScreenBorder(const Player& player);
-    void SetPlayerDirection(Player& player, PlayerDirection direction);
-    void InitPlayer(Player& player, sf::Texture& texture);
+    void SetPlayerDirection(Player& player, const PlayerDirection direction);
+    void InitPlayer(Player& player, const sf::Texture& texture);
     void UpdatePlayer(Player& player, const float deltaTime);
     void DrawPlayer(Player& player, sf::RenderWindow& window);
 }

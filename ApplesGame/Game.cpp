@@ -10,9 +10,10 @@ namespace ApplesGame
         SetPlayerSpeed(game.player, INITIAL_SPEED);
         SetPlayerDirection(game.player, PlayerDirection::Right);
 
-        for (int i = 0; i < NUM_APPLES; ++i)
+        for (Apple* prt = game.apples; prt < game.apples + game.numApples; prt++)
         {
-            SetApplePosition(game.apples[i], GetRandomPostionInRectangle(game.screenRect));
+            SetApplePosition(*prt, GetRandomPostionInRectangle(game.screenRect));
+            prt->isEaten = false;
         }
 
         for (int i = 0; i < NUM_ROCKS; ++i)
@@ -50,19 +51,34 @@ namespace ApplesGame
             StartGameoverState(game);
         }
 
-        for (int i = 0; i < NUM_APPLES; ++i)
+        if (game.numEatenApples == game.numApples && !(game.gameMode & GameModeMask::infiniteApples))
         {
-            if (DoShapesCollide(GetPlayerCollider(game.player), GetAppleCollider(game.apples[i])))
+            StartGameoverState(game);
+        }
+
+        for (Apple* prt = game.apples; prt < game.apples + game.numApples; prt++)
+        {
+            if (DoShapesCollide(GetPlayerCollider(game.player), GetAppleCollider(*prt)) && prt->isEaten == false)
             {
-                SetPlayerSpeed(game.player, GetPlayerSpeed(game.player) + ACCELERATION);
+                if (game.gameMode & GameModeMask::infiniteApples)
+                {
+                    SetApplePosition(*prt, GetRandomPostionInRectangle(game.screenRect));
+                }
+                else
+                {
+                    prt->isEaten = true;
+                }
+                if (game.gameMode & GameModeMask::accelerationSpeed)
+                {
+                    SetPlayerSpeed(game.player, GetPlayerSpeed(game.player) + ACCELERATION);
+                }
                 ++game.numEatenApples;
-                SetApplePosition(game.apples[i], GetRandomPostionInRectangle(game.screenRect));
                 game.eatAppleSound.play();
             }
         }
-        for (int i = 0; i < NUM_ROCKS; ++i)
+        for (Rock rock : game.rocks)
         {
-            if (DoShapesCollide(GetRockCollider(game.rocks[i]), GetPlayerCollider(game.player)))
+            if (DoShapesCollide(GetRockCollider(rock), GetPlayerCollider(game.player)))
             {
                 StartGameoverState(game);
             }
@@ -85,7 +101,6 @@ namespace ApplesGame
         }
     }
     
-
     void InitSound(sf::SoundBuffer& soundBuf, sf::Sound& sound, const std::string& path)
     {
         assert(soundBuf.loadFromFile(path));
@@ -104,14 +119,16 @@ namespace ApplesGame
 
         assert(game.font.loadFromFile(RESOURCES_PATH + "\\Fonts\\Roboto-Bold.ttf"));
         InitUIGame(game.uiGame, game.font);
+        InitMenu(game.menu, game.font);
 
         game.screenRect = { 0.f, 0.f , SCREEN_WIDHT, SCREEN_HEIGHT };
 
         InitPlayer(game.player, game.playerTexture);
-
-        for (int i = 0; i < NUM_APPLES; ++i)
+        game.numApples = GetRandomValue(MIN_NUM_APPLES, MAX_NUM_APPLES);
+        game.apples = new Apple[game.numApples];
+        for (Apple* prt = game.apples; prt < game.apples + game.numApples; prt++)
         {
-            InitApple(game.apples[i], game.appleTexture);
+            InitApple(*prt, game.appleTexture);
         }
 
         for (int i = 0; i < NUM_ROCKS; ++i)
@@ -124,33 +141,62 @@ namespace ApplesGame
 
     void UpdateGame(Game& game, float deltaTime)
     {
-        if (!game.isGameFinished)
+        if (game.gameState == GameStateMask::game && sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
         {
-            UpdatePlayingState(game, deltaTime);
+            game.gameState = GameStateMask::menu;
         }
-        else
+        if (game.gameState == GameStateMask::menu)
         {
-            UpdateGameoverState(game, deltaTime);
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+            {
+                game.gameState = GameStateMask::game;
+                StartPlayingState(game);
+            }
         }
-        UpdateUIGame(game.uiGame, game.numEatenApples, game.gameFinishTime);
+        if (game.gameState == GameStateMask::game)
+        {
+            if (!game.isGameFinished)
+            {
+                UpdatePlayingState(game, deltaTime);
+            }
+            else
+            {
+                UpdateGameoverState(game, deltaTime);
+            }
+            UpdateUIGame(game.uiGame, game.numEatenApples, game.gameFinishTime);
+        }
+        else if (game.gameState == GameStateMask::menu)
+        {
+            UpdateMenu(game.menu, game.gameMode, deltaTime);
+        }
     }
 
     void DrawGame(Game& game, sf::RenderWindow& window)
     {
-        DrawPlayer(game.player, window);
-        for (int i = 0; i < NUM_APPLES; ++i)
+        if (game.gameState == GameStateMask::game)
         {
-            DrawApple(game.apples[i], window);
+            DrawPlayer(game.player, window);
+            for (Apple* prt = game.apples; prt < game.apples + game.numApples; prt++)
+            {
+                if (prt->isEaten == false)
+                {
+                    DrawApple(*prt, window);
+                }
+            }
+            for (Rock rock : game.rocks)
+            {
+                DrawRock(rock, window);
+            }
+            DrawUIGame(game.uiGame, window, game.isGameFinished);
         }
-        for (int i = 0; i < NUM_ROCKS; ++i)
+        else if (game.gameState == GameStateMask::menu)
         {
-            DrawRock(game.rocks[i], window);
+            DrawMenu(game.menu, window);
         }
-        DrawUIGame(game.uiGame, window, game.isGameFinished);
     }
 
     void DeinializeGame(Game& game)
     {
-
+        delete[] game.apples;
     }
 }

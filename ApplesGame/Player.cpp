@@ -2,7 +2,7 @@
 
 namespace ApplesGame
 {
-    void InitPlayer(Player& player, sf::Texture& texture)
+    void InitPlayer(Player& player, const sf::Texture& texture)
     {
         player.position = {
             SCREEN_WIDHT / 2.f,
@@ -31,7 +31,7 @@ namespace ApplesGame
         return player.speed;
     }
 
-    void SetPlayerDirection(Player& player, PlayerDirection direction)
+    void SetPlayerDirection(Player& player, const PlayerDirection direction)
     {
         player.direction = direction;
     }
