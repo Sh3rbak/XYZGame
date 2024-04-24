@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Constants.h"
 #include "Math.h"
+#include "TextFunctions.h"
 
 namespace ApplesGame
 {

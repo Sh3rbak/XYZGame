@@ -3,24 +3,14 @@
 
 namespace ApplesGame
 {
-	void InitTextMenu(sf::Text& text, const sf::Font& font, const std::string& string,
-		const int& size, const sf::Color& color, const Position2D& position)
-	{
-		text.setFont(font);
-		text.setString(string);
-		text.setCharacterSize(size);
-		text.setFillColor(color);
-		text.setOrigin(GetTextOrigin(text, { 0.5f, 0.5f }));
-		text.setPosition(position.x, position.y);
-	}
 	void InitMenu(Menu& menu, const sf::Font& font)
 	{
-		InitTextMenu(menu.titleText, font, "APPLES GAME!", 60, sf::Color::White, { SCREEN_WIDHT / 2, SCREEN_HEIGHT / 4 });
-		InitTextMenu(menu.subtitleText, font, "Num to select Game Mode, Space to New Game", 
+		InitText(menu.titleText, font, "APPLES GAME!", 60, sf::Color::White, { SCREEN_WIDHT / 2, SCREEN_HEIGHT / 4 });
+		InitText(menu.subtitleText, font, "Num to select Game Mode, Space to New Game", 
 			20, sf::Color::White, { SCREEN_WIDHT / 2, SCREEN_HEIGHT / 3 }); 
-		InitTextMenu(menu.accelerationSpeedText, font, "1. Accelaretion Speed : On", 
+		InitText(menu.accelerationSpeedText, font, "1. Accelaretion Speed : On", 
 			30, sf::Color::White, { SCREEN_WIDHT / 2, SCREEN_HEIGHT / 2 });
-		InitTextMenu(menu.infiniteApplesText, font, "2. Infinite Apples : On", 
+		InitText(menu.infiniteApplesText, font, "2. Infinite Apples : On", 
 			30, sf::Color::White, { SCREEN_WIDHT / 2, SCREEN_HEIGHT / 2 + 50.f });
 	}
 	void UpdateMenu(Menu& menu, int& gameMode, const float& deltaTime)
@@ -37,23 +27,12 @@ namespace ApplesGame
 			menu.buttonPause = 0;
 		}
 		
-		if (gameMode & GameModeMask::accelerationSpeed)
-		{
-			menu.accelerationSpeedText.setString("1. Accelaretion Speed : On");
-		}
-		else
-		{
-			menu.accelerationSpeedText.setString("1. Accelaretion Speed : Off");
-		}
-
-		if (gameMode & GameModeMask::infiniteApples)
-		{
-			menu.infiniteApplesText.setString("2. Infinite Apples : On");
-		}
-		else
-		{
-			menu.infiniteApplesText.setString("2. Infinite Apples : Off");
-		}
+		bool isAccelerationSpeed = gameMode & GameModeMask::accelerationSpeed;
+		bool isInfiniteApples = gameMode & GameModeMask::infiniteApples;
+		sf::String textForSelectGameMode = "1. Acceleration Speed : " + sf::String(isAccelerationSpeed ? "On" : "Off");
+		menu.accelerationSpeedText.setString(textForSelectGameMode);
+		textForSelectGameMode = "2. Infinite Apples : " + sf::String(isInfiniteApples ? "On" : "Off");
+		menu.infiniteApplesText.setString(textForSelectGameMode);
 	}
 	void DrawMenu(Menu& menu, sf::RenderWindow& window)
 	{
@@ -61,6 +40,5 @@ namespace ApplesGame
 		window.draw(menu.subtitleText);
 		window.draw(menu.accelerationSpeedText);
 		window.draw(menu.infiniteApplesText);
-
 	}
 }

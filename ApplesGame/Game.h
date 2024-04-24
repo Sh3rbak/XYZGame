@@ -28,7 +28,7 @@ namespace ApplesGame
 		Rectangle screenRect;
 
 		Player player;
-		Apple* apples;
+		Apple* apples = nullptr;
 		Rock rocks[NUM_ROCKS];
 
 		int numApples;
