@@ -3,6 +3,7 @@
 #include "Constants.h"
 #include "Math.h"
 #include "TextFunctions.h"
+#include "LeaderBoard.h"
 
 namespace ApplesGame
 {
@@ -12,6 +13,8 @@ namespace ApplesGame
 		sf::Text controlPlayerText;
 		sf::Text gameOverText;
 		sf::Text gameOverScoreText;
+
+		LeaderBoard leaderBoard;
 	};
 
 	void InitUIGame(UIGame& uiGame, const sf::Font& font);

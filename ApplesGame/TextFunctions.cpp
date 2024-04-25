@@ -12,4 +12,9 @@ namespace ApplesGame
 		text.setOrigin(GetTextOrigin(text, { 0.5f, 0.5f }));
 		text.setPosition(position.x, position.y);
 	}
+	void UpdateText(sf::Text& text, const std::string& string, const Position2D& originText)
+	{
+		text.setString(string);
+		text.setOrigin(GetTextOrigin(text, originText));
+	}
 }

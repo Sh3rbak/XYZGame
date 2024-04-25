@@ -90,6 +90,11 @@ namespace ApplesGame
         game.isGameFinished = true;
         game.gameFinishTime = 0.f;
         game.deadPlayerSound.play();
+
+        if (game.uiGame.leaderBoard.totalScore < game.numEatenApples)
+        {
+            game.uiGame.leaderBoard.totalScore = game.numEatenApples;
+        }
     }
 
     void UpdateGameoverState(Game& game, float deltaTime)
@@ -198,5 +203,6 @@ namespace ApplesGame
     void DeinializeGame(Game& game)
     {
         delete[] game.apples;
+        
     }
 }

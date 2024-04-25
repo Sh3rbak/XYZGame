@@ -6,15 +6,16 @@
 
 namespace ApplesGame
 {
-	struct Player
+	struct MumberTopList
 	{
 		sf::String name = "";
 		int score = 0;
 	};
-	struct LeaderList
+	struct LeaderBoard
 	{
-		Player* players = nullptr;
-		int scorePlayer = 0;
+		MumberTopList* players = nullptr;
+		const int numPlayers = 5;
+		int totalScore = 0;
 		sf::String playerName = "Player";
 
 		sf::Text firstText;
@@ -22,10 +23,9 @@ namespace ApplesGame
 		sf::Text thirdText;
 		sf::Text fourthText;
 		sf::Text fifthText;
-		sf::Text scoreCurrentText;
 	};
-	void InitLeaderList(LeaderList& leaderList, const sf::Font& font);
-	void UpdateLeaderList(LeaderList& leaderList);
-	void DrawLeaderList(LeaderList& leaderList, sf::RenderWindow& window);
+	void InitLeaderBoard(LeaderBoard& leaderBoard, const sf::Font& font);
+	void UpdateLeaderBoard(LeaderBoard& leaderBoard);
+	void DrawLeaderBoard(LeaderBoard& leaderBoard, sf::RenderWindow& window);
 }
 

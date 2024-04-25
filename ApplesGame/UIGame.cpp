@@ -13,6 +13,8 @@ namespace ApplesGame
 			50, sf::Color::White, { SCREEN_WIDHT / 2.f, SCREEN_HEIGHT / 2.5f });
 		InitText(uiGame.gameOverScoreText, font, "Your score : 0",
 			30, sf::Color::White, { SCREEN_WIDHT / 2.f, SCREEN_HEIGHT / 2.f });
+
+		InitLeaderBoard(uiGame.leaderBoard, font);
 	}
 
 	void UpdateUIGame(UIGame& uiGame, const int score, const float finishPauseTime)
@@ -21,6 +23,8 @@ namespace ApplesGame
 
 		uiGame.gameOverText.setFillColor((int)finishPauseTime % 2 ? sf::Color::White : sf::Color::Yellow);
 		uiGame.gameOverScoreText.setString("Your score : " + std::to_string(score));
+
+		UpdateLeaderBoard(uiGame.leaderBoard);
 	}
 
 	void DrawUIGame(UIGame& uiGame, sf::RenderWindow& window, const bool isGameFinished)
@@ -31,6 +35,7 @@ namespace ApplesGame
 		{
 			window.draw(uiGame.gameOverText);
 			window.draw(uiGame.gameOverScoreText);
+			DrawLeaderBoard(uiGame.leaderBoard, window);
 		}
 	}
 }

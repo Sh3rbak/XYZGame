@@ -31,7 +31,7 @@ namespace ApplesGame
 		Apple* apples = nullptr;
 		Rock rocks[NUM_ROCKS];
 
-		int numApples;
+		int numApples = 0;
 		float gameFinishTime = 0;
 		bool isGameFinished = false;
 		int numEatenApples = 0;
@@ -52,8 +52,6 @@ namespace ApplesGame
 		Menu menu;
 	};
 
-	
-
 	void InitGame(Game& game);
 	void UpdateGame(Game& game, float deltaTime);
 	void DrawGame(Game& game, sf::RenderWindow& window);
@@ -65,7 +63,6 @@ namespace ApplesGame
 
 	void StartGameoverState(Game& game);
 	void UpdateGameoverState(Game& game, float deltaTime);
-
 
 }
 
