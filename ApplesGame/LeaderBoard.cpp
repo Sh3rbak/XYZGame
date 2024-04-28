@@ -9,21 +9,19 @@ namespace ApplesGame
 	void InitLeaderBoard(LeaderBoard& leaderBoard, const sf::Font& font)
 	{
 		sf::String names[] = { "Nick", "Ron", "Anna", "Rob", "Liza", "Sara", "Joy", "Eve", "Lea", "Zoe", "Kay", "Ray" };
-		leaderBoard.players = new MumberTopList[leaderBoard.numPlayers];
 
-		for (int i = 0; i < leaderBoard.numPlayers; ++i)
+		leaderBoard.players.resize(MAX_RECORDS_TABLE_SIZE);
+		for (MumberTopList& player : leaderBoard.players)
 		{
-			leaderBoard.players[i].score = GetRandomValue(5, 10);
-		}
-		for (auto prt = leaderBoard.players; prt < leaderBoard.players + leaderBoard.numPlayers; ++prt )
-		{
+			player.score = GetRandomValue(5, 10);
 			int randNameIndex = GetRandomValue(0, 11);
-			prt->name = names[randNameIndex];
+			player.name = names[randNameIndex];
 		}
-		leaderBoard.players[leaderBoard.numPlayers - 1] = {leaderBoard.playerName, 0};
-		std::sort(leaderBoard.players, leaderBoard.players + leaderBoard.numPlayers);
 
-		InitText(leaderBoard.firstText, font, leaderBoard.players->name + "\t" + std::to_string(leaderBoard.players->score),
+		leaderBoard.players[4] = {leaderBoard.playerName, 0};
+		std::sort(leaderBoard.players.begin(), leaderBoard.players.end());
+
+		InitText(leaderBoard.firstText, font, leaderBoard.players[0].name + "\t" + std::to_string(leaderBoard.players[0].score),
 			25, sf::Color::White, { SCREEN_WIDHT / 2, SCREEN_HEIGHT * 0.7f });
 		InitText(leaderBoard.secondText, font, leaderBoard.players[1].name + "\t" + std::to_string(leaderBoard.players[1].score),
 			25, sf::Color::White, {SCREEN_WIDHT / 2, SCREEN_HEIGHT * 0.75f});
@@ -36,16 +34,16 @@ namespace ApplesGame
 	}
 	void UpdateLeaderBoard(LeaderBoard& leaderBoard)
 	{
-		for (auto prt = leaderBoard.players; prt < leaderBoard.players + leaderBoard.numPlayers; ++prt)
+		for (MumberTopList& player : leaderBoard.players)
 		{
-			if (prt->name == leaderBoard.playerName)
+			if (player.name == leaderBoard.playerName)
 			{
-				prt->score = leaderBoard.totalScore;
+				player.score = leaderBoard.totalScore;
 			}
 		}
-		std::sort(leaderBoard.players, leaderBoard.players + leaderBoard.numPlayers);
+		std::sort(leaderBoard.players.begin(), leaderBoard.players.end());
 
-		UpdateText(leaderBoard.firstText, leaderBoard.players->name + "\t" + std::to_string(leaderBoard.players->score));
+		UpdateText(leaderBoard.firstText, leaderBoard.players[0].name + "\t" + std::to_string(leaderBoard.players[0].score));
 		UpdateText(leaderBoard.secondText, leaderBoard.players[1].name + "\t" + std::to_string(leaderBoard.players[1].score));
 		UpdateText(leaderBoard.thirdText, leaderBoard.players[2].name + "\t" + std::to_string(leaderBoard.players[2].score));
 		UpdateText(leaderBoard.fourthText, leaderBoard.players[3].name + "\t" + std::to_string(leaderBoard.players[3].score));
@@ -58,5 +56,13 @@ namespace ApplesGame
 		window.draw(leaderBoard.thirdText);
 		window.draw(leaderBoard.fourthText);
 		window.draw(leaderBoard.fifthText);
+	}
+	void SetTotalScoreInLeaderBoard(LeaderBoard& leaderBoard, unsigned int totalScore)
+	{
+		leaderBoard.totalScore = totalScore;
+	}
+	int GetTotalScore(LeaderBoard& leaderBoard)
+	{
+		return leaderBoard.totalScore;
 	}
 }

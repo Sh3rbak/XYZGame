@@ -19,8 +19,9 @@ namespace ApplesGame
         return { {rock.position.x - ROCK_SIZE / 2.f, rock.position.y - ROCK_SIZE / 2.f}, {ROCK_SIZE, ROCK_SIZE} };
     }
 
-    void SetRockPosition(Rock& rock, const Position2D& position)
+    void ResetRockState(Rock& rock)
     {
-        rock.position = position;
+        rock.position.x = (float)(rand() % SCREEN_WIDHT);
+        rock.position.y = (float)(rand() % SCREEN_HEIGHT);
     }
 }

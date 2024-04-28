@@ -11,8 +11,22 @@ namespace ApplesGame
 
     void DrawApple(Apple& apple, sf::RenderWindow& window)
     {
+        if (apple.isEaten == true)
+        {
+            return;
+        }
         apple.sprite.setPosition(apple.position.x, apple.position.y);
         window.draw(apple.sprite);
+    }
+
+    void MarkAppleEaten(Apple& apple)
+    {
+        apple.isEaten = true;
+    }
+
+    bool IsAppleEaten(Apple& apple)
+    {
+        return apple.isEaten;
     }
 
     Circle GetAppleCollider(const Apple& apple)
@@ -20,8 +34,10 @@ namespace ApplesGame
         return { apple.position, APPLE_SIZE / 2.f };
     }
 
-    void SetApplePosition(Apple& apple, const Position2D& position)
+    void ResetAppleState(Apple& apple)
     {
-        apple.position = position;
+        apple.position.x = (float)(rand() % SCREEN_WIDHT);
+        apple.position.y = (float)(rand() % SCREEN_HEIGHT);
+        apple.isEaten = false;
     }
 }

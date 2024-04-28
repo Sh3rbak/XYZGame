@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Constants.h"
+#include "GameSettings.h"
 #include "Math.h"
 #include "TextFunctions.h"
 
@@ -13,8 +13,7 @@ namespace ApplesGame
 	};
 	struct LeaderBoard
 	{
-		MumberTopList* players = nullptr;
-		const int numPlayers = 5;
+		std::vector<MumberTopList> players;
 		int totalScore = 0;
 		sf::String playerName = "Player";
 
@@ -27,5 +26,7 @@ namespace ApplesGame
 	void InitLeaderBoard(LeaderBoard& leaderBoard, const sf::Font& font);
 	void UpdateLeaderBoard(LeaderBoard& leaderBoard);
 	void DrawLeaderBoard(LeaderBoard& leaderBoard, sf::RenderWindow& window);
+	void SetTotalScoreInLeaderBoard(LeaderBoard& leaderBoard, unsigned int totalScore);
+	int GetTotalScore(LeaderBoard& leaderBoard);
 }
 

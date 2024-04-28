@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Math.h"
-#include "Constants.h"
+#include "GameSettings.h"
 
 namespace ApplesGame
 {
@@ -14,7 +14,9 @@ namespace ApplesGame
 
     void InitApple(Apple& apple, const sf::Texture& texture);
     void DrawApple(Apple& apple, sf::RenderWindow& window);
+    void MarkAppleEaten(Apple& apple);
+    bool IsAppleEaten(Apple& apple);
     Circle GetAppleCollider(const Apple& apple);
-    void SetApplePosition(Apple& apple, const Position2D& position);
+    void ResetAppleState(Apple& apple);
 }
 

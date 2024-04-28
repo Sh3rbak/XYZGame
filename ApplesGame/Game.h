@@ -1,7 +1,7 @@
 #pragma once
-#include "SFML/Graphics.hpp"
-#include "SFML/Audio.hpp"
-#include "Constants.h"
+#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+#include "GameSettings.h"
 #include "Math.h"
 #include "Player.h"
 #include "Apple.h"
@@ -28,10 +28,9 @@ namespace ApplesGame
 		Rectangle screenRect;
 
 		Player player;
-		Apple* apples = nullptr;
-		Rock rocks[NUM_ROCKS];
+		std::vector<Apple> apples;
+		std::vector<Rock> rocks;
 
-		int numApples = 0;
 		float gameFinishTime = 0;
 		bool isGameFinished = false;
 		int numEatenApples = 0;

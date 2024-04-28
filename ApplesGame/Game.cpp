@@ -10,15 +10,14 @@ namespace ApplesGame
         SetPlayerSpeed(game.player, INITIAL_SPEED);
         SetPlayerDirection(game.player, PlayerDirection::Right);
 
-        for (Apple* prt = game.apples; prt < game.apples + game.numApples; prt++)
+        for (Apple& apple : game.apples)
         {
-            SetApplePosition(*prt, GetRandomPostionInRectangle(game.screenRect));
-            prt->isEaten = false;
+            ResetAppleState(apple);
         }
 
-        for (int i = 0; i < NUM_ROCKS; ++i)
+        for (Rock& rock : game.rocks)
         {
-            SetRockPosition(game.rocks[i], GetRandomPostionInRectangle(game.screenRect));
+            ResetRockState(rock);
         }
 
         game.numEatenApples = 0;
@@ -51,22 +50,22 @@ namespace ApplesGame
             StartGameoverState(game);
         }
 
-        if (game.numEatenApples == game.numApples && !(game.gameMode & GameModeMask::infiniteApples))
+        if (game.numEatenApples == game.apples.size() && !(game.gameMode & GameModeMask::infiniteApples))
         {
             StartGameoverState(game);
         }
 
-        for (Apple* prt = game.apples; prt < game.apples + game.numApples; prt++)
+        for (Apple& apple : game.apples)
         {
-            if (DoShapesCollide(GetPlayerCollider(game.player), GetAppleCollider(*prt)) && prt->isEaten == false)
+            if (DoShapesCollide(GetPlayerCollider(game.player), GetAppleCollider(apple)) && !IsAppleEaten(apple))
             {
                 if (game.gameMode & GameModeMask::infiniteApples)
                 {
-                    SetApplePosition(*prt, GetRandomPostionInRectangle(game.screenRect));
+                    ResetAppleState(apple);
                 }
                 else
                 {
-                    prt->isEaten = true;
+                    MarkAppleEaten(apple);
                 }
                 if (game.gameMode & GameModeMask::accelerationSpeed)
                 {
@@ -76,7 +75,7 @@ namespace ApplesGame
                 game.eatAppleSound.play();
             }
         }
-        for (Rock rock : game.rocks)
+        for (Rock& rock : game.rocks)
         {
             if (DoShapesCollide(GetRockCollider(rock), GetPlayerCollider(game.player)))
             {
@@ -91,9 +90,9 @@ namespace ApplesGame
         game.gameFinishTime = 0.f;
         game.deadPlayerSound.play();
 
-        if (game.uiGame.leaderBoard.totalScore < game.numEatenApples)
+        if (GetTotalScore(game.uiGame.leaderBoard) < game.numEatenApples)
         {
-            game.uiGame.leaderBoard.totalScore = game.numEatenApples;
+            SetTotalScoreInLeaderBoard(game.uiGame.leaderBoard, game.numEatenApples);
         }
     }
 
@@ -129,16 +128,16 @@ namespace ApplesGame
         game.screenRect = { 0.f, 0.f , SCREEN_WIDHT, SCREEN_HEIGHT };
 
         InitPlayer(game.player, game.playerTexture);
-        game.numApples = GetRandomValue(MIN_NUM_APPLES, MAX_NUM_APPLES);
-        game.apples = new Apple[game.numApples];
-        for (Apple* prt = game.apples; prt < game.apples + game.numApples; prt++)
+        int numApples = GetRandomValue(MIN_NUM_APPLES, MAX_NUM_APPLES);
+        game.apples.resize(numApples);
+        for (Apple& apple : game.apples)
         {
-            InitApple(*prt, game.appleTexture);
+            InitApple(apple, game.appleTexture);
         }
-
-        for (int i = 0; i < NUM_ROCKS; ++i)
+        game.rocks.resize(NUM_ROCKS);
+        for (Rock& rock : game.rocks)
         {
-            InitRock(game.rocks[i], game.rockTexture);
+            InitRock(rock, game.rockTexture);
         }
 
         StartPlayingState(game);
@@ -181,14 +180,11 @@ namespace ApplesGame
         if (game.gameState == GameStateMask::game)
         {
             DrawPlayer(game.player, window);
-            for (Apple* prt = game.apples; prt < game.apples + game.numApples; prt++)
+            for (Apple& apple : game.apples)
             {
-                if (prt->isEaten == false)
-                {
-                    DrawApple(*prt, window);
-                }
+                DrawApple(apple, window);
             }
-            for (Rock rock : game.rocks)
+            for (Rock& rock : game.rocks)
             {
                 DrawRock(rock, window);
             }
@@ -202,7 +198,6 @@ namespace ApplesGame
 
     void DeinializeGame(Game& game)
     {
-        delete[] game.apples;
         
     }
 }
