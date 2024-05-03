@@ -19,7 +19,7 @@ namespace ApplesGame
         window.draw(apple.sprite);
     }
 
-    void MarkAppleEaten(Apple& apple)
+    void MarkAppleAsEaten(Apple& apple)
     {
         apple.isEaten = true;
     }

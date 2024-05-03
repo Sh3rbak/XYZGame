@@ -40,4 +40,3 @@ namespace ApplesGame
 
     sf::Vector2f GetTextOrigin(const sf::Text& text, const Vector2D& relativePosition);
 }
-

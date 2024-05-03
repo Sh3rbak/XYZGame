@@ -16,6 +16,6 @@ namespace ApplesGame
 	};
 
 	void InitMenu(Menu& menu, const sf::Font& font);
-	void UpdateMenu(Menu& menu, int& gameMode, const float& deltaTime);
+	void UpdateMenu(Menu& menu, const struct Game& game);
 	void DrawMenu(Menu& menu, sf::RenderWindow& window);
 }

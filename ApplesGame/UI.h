@@ -7,8 +7,10 @@
 
 namespace ApplesGame
 {
-	struct UIGame
+	struct UI
 	{
+		int score = 0;
+
 		sf::Text scorePlayerText;
 		sf::Text controlPlayerText;
 		sf::Text gameOverText;
@@ -17,7 +19,8 @@ namespace ApplesGame
 		LeaderBoard leaderBoard;
 	};
 
-	void InitUIGame(UIGame& uiGame, const sf::Font& font);
-	void UpdateUIGame(UIGame& uiGame, const int score, const float finishPauseTime);
-	void DrawUIGame(UIGame& uiGame, sf::RenderWindow& window, const bool isGameFinished);
+	void InitUI(UI& UI, const sf::Font& font);
+	void UpdateUI(UI& UI, const float finishPauseTime);
+	void DrawUI(UI& UI, sf::RenderWindow& window, const bool isGameFinished);
+	void SetScoreInUI(UI& UI, int score);
 }

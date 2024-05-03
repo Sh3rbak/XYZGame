@@ -1,45 +1,48 @@
 #include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
 #include "Game.h"
+
+using namespace ApplesGame;
 
 int main()
 {
-    using namespace ApplesGame;
     int seed = (int)time(nullptr);
     srand(seed);
+
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDHT , SCREEN_HEIGHT), "APPLES GAME!");
 
     //Game init
-    Game game;
-    InitGame(game);
+    ApplesGame::Game* game = new ApplesGame::Game();
+    InitGame(*game);
 
     sf::Clock gameClock;
     float lastTime = gameClock.getElapsedTime().asSeconds();
 
     while (window.isOpen())
     {
+        HandleWindowEvents(*game, window);
+
+        if (!window.isOpen())
+        {
+            break;
+        }
+
         sf::sleep(sf::milliseconds(16));
 
         float currentTime = gameClock.getElapsedTime().asSeconds();
         float deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-                window.close();
-        }
-
         //Game update
-        UpdateGame(game, deltaTime);
+        UpdateGame(*game, deltaTime);
 
         window.clear();
-        DrawGame(game, window);
+        DrawGame(*game, window);
         window.display();
     }
 
-    DeinializeGame(game);
+    ShutdownGame(*game);
+    delete game;
+    game = nullptr;
 
     return 0;
 }

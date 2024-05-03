@@ -137,6 +137,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Apple.cpp" />
+    <ClCompile Include="ExitDialog.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="LeaderBoard.cpp" />
@@ -145,19 +146,20 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Rock.cpp" />
     <ClCompile Include="TextFunctions.cpp" />
-    <ClCompile Include="UIGame.cpp" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Apple.h" />
-    <ClInclude Include="Constants.h" />
+    <ClInclude Include="ExitDialog.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameSettings.h" />
     <ClInclude Include="LeaderBoard.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Rock.h" />
     <ClInclude Include="TextFunctions.h" />
-    <ClInclude Include="UIGame.h" />
+    <ClInclude Include="UI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

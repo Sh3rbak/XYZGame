@@ -6,36 +6,44 @@
 #include "Player.h"
 #include "Apple.h"
 #include "Rock.h"
-#include "UIGame.h"
+#include "UI.h"
 #include "Menu.h"
+#include "ExitDialog.h"
 
 namespace ApplesGame
 {
-	enum class GameStateMask
-	{
-		game = 0,
-		menu
-	};
-
-	enum GameModeMask
+	enum class GameOptions : std::uint8_t
 	{
 		accelerationSpeed = 1 << 0,
-		infiniteApples = 1 << 1
+		infiniteApples = 1 << 1,
+
+		Default = accelerationSpeed | infiniteApples,
+		Empty = 0
+	};
+
+	enum class GameState
+	{
+		None = 0,
+		Playing,
+		GameOver,
+		Menu,
+		ExitDialog
 	};
 
 	struct Game
 	{
-		Rectangle screenRect;
+		UI UI;
+		Menu menu;
+		ExitDialog exitDialog;
 
+		GameOptions options = GameOptions::Default;
 		Player player;
 		std::vector<Apple> apples;
 		std::vector<Rock> rocks;
 
 		float gameFinishTime = 0;
-		bool isGameFinished = false;
 		int numEatenApples = 0;
-		GameStateMask gameState  = GameStateMask::menu;
-		int gameMode = 3;
+		std::vector<GameState> gameStateStack;
 
 		sf::Texture playerTexture;
 		sf::Texture appleTexture;
@@ -47,21 +55,27 @@ namespace ApplesGame
 		sf::Sound eatAppleSound;
 
 		sf::Font font;
-		UIGame uiGame;
-		Menu menu;
 	};
 
+	void HandleWindowEvents(Game& game, sf::RenderWindow& window);
 	void InitGame(Game& game);
-	void UpdateGame(Game& game, float deltaTime);
+	void UpdateGame(Game& game, float timeDelta);
+	void RestartGame(Game& game);
 	void DrawGame(Game& game, sf::RenderWindow& window);
-	void DeinializeGame(Game& game);
+	void ShutdownGame(Game& game);
 
-	
-	void StartPlayingState(Game& game);
-	void UpdatePlayingState(Game& game, float deltaTime);
+	void PushGameState(Game& game, GameState state);
+	void PopGameState(Game& game);
+	void SwitchGameState(Game& game, GameState newState);
+	void SwitchGameStateInternal(Game& game, GameState oldState, GameState newState);
+	GameState GetCurrentGameState(const Game& game);
 
-	void StartGameoverState(Game& game);
-	void UpdateGameoverState(Game& game, float deltaTime);
+	void InitPlayingState(Game& game);
+	void UpdatePlayingState(Game& game, float timeDelta);
+	void ShutdownPlayingState(Game& game);
 
+	void InitGameOverState(Game& game);
+	void UpdateGameOverState(Game& game, float timeDelta);
+	void ShutdownGameOverState(Game& game);
 }
 

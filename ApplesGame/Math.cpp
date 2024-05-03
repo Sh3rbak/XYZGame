@@ -1,6 +1,5 @@
 #include "Math.h"
 #include <cstdlib>
-#include <SFML/Graphics.hpp>
 
 namespace ApplesGame
 {
@@ -33,7 +32,7 @@ namespace ApplesGame
         result.y = rand() / (float)RAND_MAX * rect.size.y + rect.position.y;
         return result;
     }
-        
+
     void SetSpriteSize(sf::Sprite& sprite, const float desiredWidth, const float desiredHeight)
     {
         sf::FloatRect spriteRect = sprite.getLocalBounds();

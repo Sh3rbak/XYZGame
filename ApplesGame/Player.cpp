@@ -44,9 +44,9 @@ namespace ApplesGame
     bool HasPlayerCollisionWithScreenBorder(const Player& player)
     {
         return (((player.position.x - PLAYER_SIZE / 2.f) < 0) ||
-               ((player.position.y - PLAYER_SIZE / 2.f) < 0) ||
-               ((player.position.x + PLAYER_SIZE / 2.f) > SCREEN_WIDHT) ||
-               ((player.position.y + PLAYER_SIZE / 2.f) > SCREEN_HEIGHT));
+            ((player.position.y - PLAYER_SIZE / 2.f) < 0) ||
+            ((player.position.x + PLAYER_SIZE / 2.f) > SCREEN_WIDHT) ||
+            ((player.position.y + PLAYER_SIZE / 2.f) > SCREEN_HEIGHT));
     }
 
     void UpdatePlayer(Player& player, const float deltaTime)

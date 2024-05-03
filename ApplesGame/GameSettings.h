@@ -16,5 +16,6 @@ namespace ApplesGame
 	const float ROCK_SIZE = 20.f;
 	const float PAUSE_TIME = 3.f;
 	const float BUTTON_PAUSE = 0.2f;
+
 	const int MAX_RECORDS_TABLE_SIZE = 5;
 }

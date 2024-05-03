@@ -22,15 +22,15 @@ namespace ApplesGame
 		std::sort(leaderBoard.players.begin(), leaderBoard.players.end());
 
 		InitText(leaderBoard.firstText, font, leaderBoard.players[0].name + "\t" + std::to_string(leaderBoard.players[0].score),
-			25, sf::Color::White, { SCREEN_WIDHT / 2, SCREEN_HEIGHT * 0.7f });
+			25, sf::Color::White, { SCREEN_WIDHT / 2, SCREEN_HEIGHT * 0.7f }, { 0.5f , 0.5f });
 		InitText(leaderBoard.secondText, font, leaderBoard.players[1].name + "\t" + std::to_string(leaderBoard.players[1].score),
-			25, sf::Color::White, {SCREEN_WIDHT / 2, SCREEN_HEIGHT * 0.75f});
+			25, sf::Color::White, {SCREEN_WIDHT / 2, SCREEN_HEIGHT * 0.75f}, { 0.5f , 0.5f });
 		InitText(leaderBoard.thirdText, font, leaderBoard.players[2].name + "\t" + std::to_string(leaderBoard.players[2].score),
-			25, sf::Color::White, { SCREEN_WIDHT / 2, SCREEN_HEIGHT * 0.8f });
+			25, sf::Color::White, { SCREEN_WIDHT / 2, SCREEN_HEIGHT * 0.8f }, { 0.5f , 0.5f });
 		InitText(leaderBoard.fourthText, font, leaderBoard.players[3].name + "\t" + std::to_string(leaderBoard.players[3].score),
-			25, sf::Color::White, {SCREEN_WIDHT / 2, SCREEN_HEIGHT * 0.85f});
+			25, sf::Color::White, {SCREEN_WIDHT / 2, SCREEN_HEIGHT * 0.85f}, { 0.5f , 0.5f });
 		InitText(leaderBoard.fifthText, font, leaderBoard.players[4].name + "\t" + std::to_string(leaderBoard.players[4].score),
-			25, sf::Color::White, { SCREEN_WIDHT / 2, SCREEN_HEIGHT * 0.9f });
+			25, sf::Color::White, { SCREEN_WIDHT / 2, SCREEN_HEIGHT * 0.9f }, { 0.5f , 0.5f });
 	}
 	void UpdateLeaderBoard(LeaderBoard& leaderBoard)
 	{
