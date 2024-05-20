@@ -1,35 +1,121 @@
 #include "Menu.h"
-#include "Game.h"
+#include <assert.h>
 
 namespace ApplesGame
 {
-	void InitMenu(Menu& menu, const sf::Font& font)
+	void InitMenuItem(MenuItem& item)
 	{
-		InitText(menu.titleText, font, "APPLES GAME!", 60, sf::Color::White, 
-			{ SCREEN_WIDHT / 2, SCREEN_HEIGHT / 4 }, { 0.5f , 0.5f });
-		InitText(menu.subtitleText, font, "Num to select Game Mode, Space to New Game", 
-			20, sf::Color::White, { SCREEN_WIDHT / 2, SCREEN_HEIGHT / 3 }, { 0.5f , 0.5f });
-		InitText(menu.accelerationSpeedText, font, "1. Accelaretion Speed : On", 
-			30, sf::Color::White, { SCREEN_WIDHT / 2, SCREEN_HEIGHT / 2 }, { 0.5f , 0.5f });
-		InitText(menu.infiniteApplesText, font, "2. Infinite Apples : On", 
-			30, sf::Color::White, { SCREEN_WIDHT / 2, SCREEN_HEIGHT / 2 + 50.f }, { 0.5f , 0.5f });
+		for (auto& child : item.children)
+		{
+			child->parent = &item;
+			InitMenuItem(*child);
+		}
 	}
 
-	void UpdateMenu(Menu& menu, const struct Game& game)
-	{		
-		bool isAccelerationSpeed = (std::uint8_t)game.options & (std::uint8_t)GameOptions::accelerationSpeed;
-		bool isInfiniteApples = (std::uint8_t)game.options & (std::uint8_t)GameOptions::infiniteApples;
-		sf::String textForSelectGameMode = "1. Acceleration Speed : " + sf::String(isAccelerationSpeed ? "On" : "Off");
-		menu.accelerationSpeedText.setString(textForSelectGameMode);
-		textForSelectGameMode = "2. Infinite Apples : " + sf::String(isInfiniteApples ? "On" : "Off");
-		menu.infiniteApplesText.setString(textForSelectGameMode);
+	void SelectMenuItem(Menu& menu, MenuItem* item)
+	{
+		// It is definitely error to select root item
+		assert(item != &menu.rootItem);
+
+		if (menu.selectedItem == item)
+		{
+			return;
+		}
+
+		if (item && !item->isEnabled)
+		{
+			// Don't allow to select disabled item
+			return;
+		}
+
+		if (menu.selectedItem)
+		{
+			menu.selectedItem->text.setFillColor(menu.selectedItem->deselectedColor);
+		}
+
+		menu.selectedItem = item;
+
+		if (menu.selectedItem)
+		{
+			menu.selectedItem->text.setFillColor(menu.selectedItem->selectedColor);
+		}
 	}
 
-	void DrawMenu(Menu& menu, sf::RenderWindow& window)
+	bool SelectPreviousMenuItem(Menu& menu)
 	{
-		window.draw(menu.titleText);
-		window.draw(menu.subtitleText);
-		window.draw(menu.accelerationSpeedText);
-		window.draw(menu.infiniteApplesText);
+		if (menu.selectedItem)
+		{
+			MenuItem* parent = menu.selectedItem->parent;
+			assert(parent); // There always should be parent
+
+			auto it = std::find(parent->children.begin(), parent->children.end(), menu.selectedItem);
+			if (it != parent->children.begin())
+			{
+				SelectMenuItem(menu, *(--it));
+				return true;
+			}
+		}
+
+		return false;
 	}
+
+	bool SelectNextMenuItem(Menu& menu)
+	{
+		if (menu.selectedItem)
+		{
+			MenuItem* parent = menu.selectedItem->parent;
+			assert(parent); // There always should be parent
+			auto it = std::find(parent->children.begin(), parent->children.end(), menu.selectedItem);
+			if (it != parent->children.end() - 1)
+			{
+				SelectMenuItem(menu, *(++it));
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool ExpandSelectedItem(Menu& menu)
+	{
+		if (menu.selectedItem && menu.selectedItem->children.size() > 0)
+		{
+			SelectMenuItem(menu, menu.selectedItem->children.front());
+			return true;
+		}
+
+		return false;
+	}
+
+	bool CollapseSelectedItem(Menu& menu)
+	{
+		if (menu.selectedItem && menu.selectedItem->parent && menu.selectedItem->parent != &menu.rootItem)
+		{
+			SelectMenuItem(menu, menu.selectedItem->parent);
+			return true;
+		}
+		return false;
+	}
+
+	MenuItem* GetCurrentMenuContext(Menu& menu)
+	{
+		return menu.selectedItem ? menu.selectedItem->parent : &menu.rootItem;
+	}
+
+	void DrawMenu(Menu& menu, sf::RenderWindow& window, sf::Vector2f position, sf::Vector2f origin)
+	{
+		MenuItem* expandedItem = GetCurrentMenuContext(menu);
+
+		std::vector<sf::Text*> texts;
+		texts.reserve(expandedItem->children.size());
+		for (auto& child : expandedItem->children)
+		{
+			if (child->isEnabled)
+			{
+				texts.push_back(&child->text);
+			}
+		}
+
+		DrawItemsList(window, texts, expandedItem->childrenSpacing, expandedItem->childrenOrientation, expandedItem->childrenAlignment, position, origin);
+	}
+
 }

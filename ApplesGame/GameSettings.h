@@ -3,19 +3,22 @@
 
 namespace ApplesGame
 {
+	// Resources path
 	const std::string RESOURCES_PATH = "Resources/";
-	const int unsigned SCREEN_WIDHT = 1240;
-	const int unsigned SCREEN_HEIGHT = 720;
-	const float INITIAL_SPEED = 100.f;
+
+	// Game settings constants
 	const float PLAYER_SIZE = 20.f;
-	const float ACCELERATION = 15.f;
-	const int MIN_NUM_APPLES = 10;
-	const int MAX_NUM_APPLES = 10;
 	const float APPLE_SIZE = 20.f;
-	const int NUM_ROCKS = 5;
-	const float ROCK_SIZE = 20.f;
-	const float PAUSE_TIME = 3.f;
-	const float BUTTON_PAUSE = 0.2f;
+	const float INITIAL_SPEED = 100.f;
+	const float ACCELERATION = 10.f; // For each eaten apple player speed will be increased by this value
+	const int MIN_APPLES = 40;
+	const int MAX_APPLES = 80;
+	const unsigned int SCREEN_WIDTH = 800;
+	const unsigned int SCREEN_HEGHT = 600;
+
+	const unsigned int APPLES_GRID_CELLS_HORIZONTAL = unsigned(SCREEN_WIDTH / (APPLE_SIZE * 4));
+	const unsigned int APPLES_GRID_CELLS_VERTICAL = unsigned(SCREEN_HEGHT / (APPLE_SIZE * 4));
+	const unsigned int MAX_APPLES_IN_CELL = MAX_APPLES / 4; // We don't expect too much apples in one cell
 
 	const int MAX_RECORDS_TABLE_SIZE = 5;
 }

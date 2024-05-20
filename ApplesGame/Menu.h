@@ -1,21 +1,42 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include "GameSettings.h"
+#include "SFML/Graphics.hpp"
 #include "Math.h"
-#include "TextFunctions.h"
+#include <list>
 
 namespace ApplesGame
 {
-	struct Menu
+	struct MenuItem
 	{
-		sf::Text titleText;
-		sf::Text subtitleText;
-		sf::Text accelerationSpeedText;
-		sf::Text infiniteApplesText;
-		float buttonPause = 0;
+		sf::Text text;
+		sf::Text hintText; // Visible when child item is selected
+		Orientation childrenOrientation = Orientation::Vertical;
+		Alignment childrenAlignment = Alignment::Min;
+		float childrenSpacing;
+
+		sf::Color selectedColor = sf::Color::Yellow;
+		sf::Color deselectedColor = sf::Color::White;
+
+		bool isEnabled = true;
+		std::vector<MenuItem*> children;
+
+		MenuItem* parent = nullptr;
 	};
 
-	void InitMenu(Menu& menu, const sf::Font& font);
-	void UpdateMenu(Menu& menu, const struct Game& game);
-	void DrawMenu(Menu& menu, sf::RenderWindow& window);
+	struct Menu
+	{
+		MenuItem rootItem;
+		MenuItem* selectedItem = nullptr;
+	};
+
+	// Links children to parent
+	void InitMenuItem(MenuItem& menu);
+	void SelectMenuItem(Menu& menu, MenuItem* item);
+	bool SelectPreviousMenuItem(Menu& menu);
+	bool SelectNextMenuItem(Menu& menu);
+	bool ExpandSelectedItem(Menu& menu);
+	bool CollapseSelectedItem(Menu& menu);
+
+	MenuItem* GetCurrentMenuContext(Menu& menu);
+
+	void DrawMenu(Menu& menu, sf::RenderWindow& window, sf::Vector2f position, sf::Vector2f origin);
 }

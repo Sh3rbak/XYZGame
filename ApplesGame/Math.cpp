@@ -1,61 +1,113 @@
 #include "Math.h"
-#include <cstdlib>
 
 namespace ApplesGame
 {
-    bool DoShapesCollide(const Rectangle& rect1, const Rectangle& rect2)
-    {
-        return rect1.position.x < rect2.position.x + rect2.size.x &&
-            rect1.position.x + rect1.size.x > rect2.position.x &&
-            rect1.position.y < rect2.position.y + rect2.size.y &&
-            rect1.position.y + rect1.size.y > rect2.position.y;
-    }
 
-    bool DoShapesCollide(const Circle& circle1, const Circle& circle2)
-    {
-        const float dx = circle1.position.x - circle2.position.x;
-        const float dy = circle1.position.y - circle2.position.y;
-        const float distance = sqrt(dx * dx + dy * dy);
-        return distance < circle1.radius + circle2.radius;
-    }
+	Vector2D operator+(const Vector2D& lhs, const Vector2D& rhs)
+	{
+		Vector2D result;
+		result.x = lhs.x + rhs.x;
+		result.y = lhs.y + rhs.y;
+		return result;
+	}
 
-    bool DoShapesCollide(const Rectangle& rect, const Circle& circle)
-    {
-        const float dx = circle.position.x - std::max(rect.position.x, std::min(circle.position.x, rect.position.x + rect.size.x));
-        const float dy = circle.position.y - std::max(rect.position.y, std::min(circle.position.y, rect.position.y + rect.size.y));
-        return (dx * dx + dy * dy) < (circle.radius * circle.radius);
-    }
-    Position2D GetRandomPostionInRectangle(const Rectangle& rect)
-    {
-        Position2D result;
-        result.x = rand() / (float)RAND_MAX * rect.size.x + rect.position.x;
-        result.y = rand() / (float)RAND_MAX * rect.size.y + rect.position.y;
-        return result;
-    }
+	sf::Vector2f OurVectorToSf(const Vector2D& v)
+	{
+		return sf::Vector2f(v.x, v.y);
+	}
 
-    void SetSpriteSize(sf::Sprite& sprite, const float desiredWidth, const float desiredHeight)
-    {
-        sf::FloatRect spriteRect = sprite.getLocalBounds();
-        sf::Vector2f scale = { desiredWidth / spriteRect.width, desiredHeight / spriteRect.height };
-        sprite.setScale(scale);
-    }
+	sf::Vector2f GetSpriteScale(const sf::Sprite& sprite, const Vector2D& desiredSize)
+	{
+		const sf::Vector2u textureSize = sprite.getTexture()->getSize();
+		const sf::Vector2f spriteScale = { desiredSize.x / textureSize.x, desiredSize.y / textureSize.y };
+		return spriteScale;
+	}
 
-    void SetSpriteRelativeOrigin(sf::Sprite& sprite, const float originX, const float originY)
-    {
-        sf::FloatRect spriteRect = sprite.getLocalBounds();
-        sprite.setOrigin(originX * spriteRect.width, originY * spriteRect.height);
-    }
+	sf::Vector2f GetItemOrigin(const sf::Sprite& sprite, const Vector2D& relativePosition)
+	{
+		const sf::Vector2u textureSize = sprite.getTexture()->getSize();
+		return { relativePosition.x * textureSize.x, relativePosition.y * textureSize.y };
+	}
 
-    int GetRandomValue(int minValue, int maxValue)
-    {
-        return rand() % (maxValue - minValue + 1) + minValue;
-    }
+	sf::Vector2f GetItemOrigin(const sf::Text& text, const sf::Vector2f& relativePosition)
+	{
+		sf::FloatRect textSize = text.getLocalBounds();
+		return {
+			(textSize.left + textSize.width) * relativePosition.x,
+			(textSize.top + textSize.height) * relativePosition.y,
+		};
+	}
 
-    sf::Vector2f GetTextOrigin(const sf::Text& text, const Vector2D& relativePosition)
-    {
-        sf::FloatRect textSize = text.getLocalBounds();
-        const float x = (textSize.left + textSize.width) * relativePosition.x;
-        const float y = (textSize.top + textSize.height) * relativePosition.y;
-        return { x, y };
-    }
+	void DrawItemsList(sf::RenderWindow& window, const std::vector<sf::Text*>& items, float spacing, Orientation orientation, Alignment alignment, const sf::Vector2f& position, const sf::Vector2f& origin)
+	{
+		sf::FloatRect totalRect;
+		// Calculate total height/width of all texts
+		for (auto it = items.begin(); it != items.end(); ++it)
+		{
+			sf::FloatRect itemRect = (*it)->getGlobalBounds();
+
+			if (orientation == Orientation::Horizontal)
+			{
+				totalRect.width += itemRect.width + (it != items.end() - 1 ? spacing : 0.f);
+				totalRect.height = std::max(totalRect.height, itemRect.height);
+			}
+			else
+			{
+				totalRect.width = std::max(totalRect.width, itemRect.width);
+				totalRect.height += itemRect.height + (it != items.end() - 1 ? spacing : 0.f);
+			}
+		}
+
+		totalRect.left = position.x - origin.x * totalRect.width;
+		totalRect.top = position.y - origin.y * totalRect.height;
+		sf::Vector2f currentPos = { totalRect.left, totalRect.top };
+		
+		for (auto it = items.begin(); it != items.end(); ++it)
+		{
+			sf::FloatRect itemRect = (*it)->getGlobalBounds();
+			sf::Vector2f itemOrigin;
+
+			if (orientation == Orientation::Horizontal)
+			{
+				itemOrigin.y = alignment == Alignment::Min ? 0.f : alignment == Alignment::Middle ? 0.5f : 1.f;
+				itemOrigin.x = 0.f;
+				currentPos.y = totalRect.top + itemOrigin.y * totalRect.height;
+			}
+			else
+			{
+				itemOrigin.y = 0.f;
+				itemOrigin.x = alignment == Alignment::Min ? 0.f : alignment == Alignment::Middle ? 0.5f : 1.f;
+				currentPos.x = totalRect.left + itemOrigin.x * totalRect.width;
+			}
+			
+			(*it)->setOrigin(GetItemOrigin(**it, itemOrigin));
+			(*it)->setPosition(currentPos);
+			window.draw(**it);
+
+			if (orientation == Orientation::Horizontal)
+			{
+				currentPos.x += itemRect.width + spacing;
+			}
+			else
+			{
+				currentPos.y += itemRect.height + spacing;
+			}
+
+			
+		}
+	}
+
+	bool IsPointInRect(Vector2D point, Vector2D rectTL, Vector2D rectBR)
+	{
+		if (point.x < rectTL.x || point.x > rectBR.x)
+		{
+			return false;
+		}
+		if (point.y < rectTL.y || point.y > rectBR.y)
+		{
+			return false;
+		}
+		return true;
+	}
+
 }

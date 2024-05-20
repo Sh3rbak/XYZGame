@@ -1,42 +1,39 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-namespace sf
-{
-    class Sprite;
-}
-
 namespace ApplesGame
 {
-    struct Vector2D
-    {
-        float x = 0;
-        float y = 0;
-    };
+	struct Vector2D
+	{
+		float x = 0.f;
+		float y = 0.f;
+	};
 
-    typedef Vector2D Position2D;
+	Vector2D operator+(const Vector2D& lhs, const Vector2D& rhs);
 
-    struct Rectangle
-    {
-        Position2D position;
-        Vector2D size;
-    };
 
-    struct Circle
-    {
-        Position2D position;
-        float radius;
-    };
+	typedef Vector2D Position;
 
-    bool DoShapesCollide(const Rectangle& rect1, const Rectangle& rect2);
-    bool DoShapesCollide(const Circle& circle1, const Circle& circle2);
-    bool DoShapesCollide(const Rectangle& rect, const Circle& circle);
+	sf::Vector2f OurVectorToSf(const Vector2D& v);
+	sf::Vector2f GetSpriteScale(const sf::Sprite& sprite, const Vector2D& desiredSize);
+	sf::Vector2f GetItemOrigin(const sf::Sprite& sprite, const Vector2D& relativePosition);
+	sf::Vector2f GetItemOrigin(const sf::Text& text, const sf::Vector2f& relativePosition);
 
-    Position2D GetRandomPostionInRectangle(const Rectangle& rect);
+	// Helper method for organizing text items
+	enum class Orientation
+	{
+		Horizontal,
+		Vertical
+	};
 
-    void SetSpriteSize(sf::Sprite& sprite, const float desiredWidth, const float desiredHeight);
-    void SetSpriteRelativeOrigin(sf::Sprite& sprite, const float originX, const float originY);
-    int GetRandomValue(int minValue, int maxValue);
+	enum class Alignment
+	{
+		Min, // Left or Top
+		Middle,
+		Max // Right or Bottom
+	};
 
-    sf::Vector2f GetTextOrigin(const sf::Text& text, const Vector2D& relativePosition);
+	void DrawItemsList(sf::RenderWindow& window, const std::vector<sf::Text*>& items, float spacing, Orientation orientation, Alignment alignment, const sf::Vector2f& position, const sf::Vector2f& origin);
+
+	bool IsPointInRect(Vector2D point, Vector2D rectTL, Vector2D rectBR);
 }
