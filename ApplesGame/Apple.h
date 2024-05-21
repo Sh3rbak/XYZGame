@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <unordered_map>
 #include "GameSettings.h"
 #include "Math.h"
 

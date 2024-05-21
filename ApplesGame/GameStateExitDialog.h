@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "Menu.h"
 
 namespace ApplesGame
 {
@@ -10,7 +11,11 @@ namespace ApplesGame
 		sf::Font font;
 
 		sf::RectangleShape background;
-		sf::Text hintText;
+
+		MenuItem continueText;
+		MenuItem exitToMenuText;
+
+		Menu menu;
 	};
 
 	void InitGameStateExitDialog(GameStateExitDialogData& data, Game& game);

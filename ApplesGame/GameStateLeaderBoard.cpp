@@ -13,11 +13,10 @@ namespace ApplesGame
 		data.recordsTableText.setFillColor(sf::Color::White);
 		data.recordsTableText.setString("Records:\nPlayer: 999\nPlayer: 999\nPlayer: 999\nPlayer: 999\nPlayer: 999");
 		data.recordsTableText.setOrigin(GetItemOrigin(data.recordsTableText, { 0.5f, 0.f }));
-
-		game.recordsTable["Player"] = 0;
 	}
 	void ShutdownGameStateLeaderBoard(GameStateLeaderBoard& data, Game& game)
 	{
+		// No need to do anything here
 	}
 	void HandleGameStateLeaderBoardWindowEvent(GameStateLeaderBoard& data, Game& game, const sf::Event& event)
 	{

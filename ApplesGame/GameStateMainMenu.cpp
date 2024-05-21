@@ -20,7 +20,6 @@ namespace ApplesGame
 		data.menu.rootItem.children.push_back(&data.leaderBoardItem);
 		data.menu.rootItem.children.push_back(&data.exitGameItem);
 
-
 		data.startGameItem.text.setString("Start Game");
 		data.startGameItem.text.setFont(data.font);
 		data.startGameItem.text.setCharacterSize(24);
@@ -37,7 +36,6 @@ namespace ApplesGame
 		data.optionsItem.childrenSpacing = 10.f;
 		data.optionsItem.children.push_back(&data.optionsInfiniteApplesItem);
 		data.optionsItem.children.push_back(&data.optionsWithAccelerationItem);
-
 
 		data.optionsInfiniteApplesItem.text.setString("Infinite Apples: On/Off");
 		data.optionsInfiniteApplesItem.text.setFont(data.font);

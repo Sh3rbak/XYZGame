@@ -18,7 +18,8 @@ namespace ApplesGame
 			{ "Grace", MAX_APPLES / 2 },
 			{ "Bella", MAX_APPLES / 3 },
 			{ "Alice", MAX_APPLES / 4 },
-			{ "Lucas", MAX_APPLES / 5 }
+			{ "Lucas", MAX_APPLES / 5 },
+			{ "Player", 0 }
 		};
 
 		game.gameStateChangeType = GameStateChangeType::None;
