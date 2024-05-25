@@ -40,28 +40,7 @@ namespace ApplesGame
 
 	void ClearApplesGrid(ApplesGrid& applesGrid)
 	{
-		for (int i = 0; i < APPLES_GRID_CELLS_HORIZONTAL; i++)
-		{
-			for (int j = 0; j < APPLES_GRID_CELLS_VERTICAL; j++)
-			{
-				ApplesGridCell& cell = applesGrid.cells[i][j];
-				for (int k = 0; k < MAX_APPLES_IN_CELL; k++)
-				{
-					Apple* apple = cell.apples[k];
-					if (apple != nullptr)
-					{
-						for (int i = apple->numGridCells - 1; i >= 0; --i)
-						{
-							apple->gridCells[i] = nullptr;
-						}
-						apple->numGridCells = 0;
-					}
-
-					cell.apples[k] = nullptr;
-				}
-				cell.numApplesInCell = 0;
-			}
-		}
+		applesGrid.cells.clear();
 	}
 
 	void AddAppleToGrid(ApplesGrid& applesGrid, Apple& apple)
@@ -76,85 +55,48 @@ namespace ApplesGame
 		int minCellY = std::max((int)(appleCornerTL.y / cellSizeY), 0);
 		int maxCellY = std::min((int)(appleCornerBR.y / cellSizeY), (int)APPLES_GRID_CELLS_VERTICAL - 1);
 
-		ApplesGridCell* newCells[4] = {nullptr};
-		int numNewCells = 0;
-		// Add apple to new cells	
+		std::unordered_set<ApplesGridCell*> newCells;
+		// Add apple to new cells
 		for (int cellX = minCellX; cellX <= maxCellX; ++cellX)
 		{
 			for (int cellY = minCellY; cellY <= maxCellY; ++cellY)
 			{
 				ApplesGridCell& cell = applesGrid.cells[cellX][cellY];
-
-				bool isAppleInCell = false;
-				for (ApplesGridCell* oldCell : apple.gridCells)
-				{
-					if (oldCell == &cell)
-					{
-						isAppleInCell = true;
-						break;
-					}
-				}
-
-				if (!isAppleInCell)
-				{
-					cell.apples[cell.numApplesInCell++] = &apple;
-					newCells[numNewCells++] = &cell;
-					assert(cell.numApplesInCell <= MAX_APPLES_IN_CELL);
-				}
+				cell.apples.insert(&apple);
+				newCells.insert(&cell);
+				assert(cell.apples.size() <= MAX_APPLES_IN_CELL);
 			}
 		}
 
 		// Remove apple from old cells
-		for (int i = 0; i < apple.numGridCells; ++i)
+		for (auto oldCell : apple.gridCells)
 		{
-			ApplesGridCell* cell = apple.gridCells[i];
-			bool needRemoveFromCell = true;
-			for (int j = 0; j < numNewCells; ++j)
+			for (auto appleInCell : oldCell->apples)
 			{
-				if (cell == newCells[j])
+				if (appleInCell != &apple)
 				{
-					needRemoveFromCell = false;
-					break;
+					oldCell->apples.erase(&apple);
+					apple.gridCells.erase(oldCell);
 				}
-			}
-
-			if (needRemoveFromCell)
-			{
-				for (int j = 0; j < cell->numApplesInCell; ++j)
-				{
-					if (cell->apples[i] == &apple)
-					{
-						cell->apples[i] = cell->apples[cell->numApplesInCell - 1];
-						cell->numApplesInCell--;
-						break;
-					}
-				}
-				apple.gridCells[i] = apple.gridCells[apple.numGridCells - 1];
-				--apple.numGridCells;
 			}
 		}
 	}
 
 	void RemoveAppleFromGrid(ApplesGrid& applesGrid, Apple& apple)
 	{
-		for (int i = 0; i < apple.numGridCells; ++i)
+		for (auto oldCell : apple.gridCells)
 		{
-			ApplesGridCell* cell = apple.gridCells[i];
-			for (int j = 0; j < cell->numApplesInCell; ++j)
+			for (auto appleInCell : oldCell->apples)
 			{
-				if (cell->apples[i] == &apple)
+				if (appleInCell != &apple)
 				{
-					cell->apples[i] = cell->apples[cell->numApplesInCell - 1];
-					cell->numApplesInCell--;
-					break;
+					oldCell->apples.erase(&apple);
 				}
 			}
-			apple.gridCells[i] = nullptr;
 		}
-		apple.numGridCells = 0;
 	}
 
-	bool FindPlayerCollisionWithApples(const Vector2D& playerPosition, const ApplesGrid& grid, Apple** result, int& numFoundApples)
+	bool FindPlayerCollisionWithApples(const Vector2D& playerPosition, ApplesGrid& grid, Apple** result, int& numFoundApples)
 	{
 		Vector2D playerCornerTL = playerPosition + Vector2D{ -PLAYER_SIZE / 2, -PLAYER_SIZE / 2 };
 		Vector2D playerCornerBR = playerPosition + Vector2D{ PLAYER_SIZE / 2, PLAYER_SIZE / 2 };
@@ -171,9 +113,8 @@ namespace ApplesGame
 		{
 			for (int cellY = minCellY; cellY <= maxCellY; ++cellY)
 			{
-				for (int i = 0; i < grid.cells[cellX][cellY].numApplesInCell; ++i)
+				for (const auto apple : grid.cells[cellX][cellY].apples)
 				{
-					Apple* apple = grid.cells[cellX][cellY].apples[i];
 					if (!apple->isEaten)
 					{
 						float dx = playerPosition.x - apple->position.x;
