@@ -96,7 +96,7 @@ namespace ApplesGame
 		}
 	}
 
-	bool FindPlayerCollisionWithApples(const Vector2D& playerPosition, ApplesGrid& grid, Apple** result, int& numFoundApples)
+	bool FindPlayerCollisionWithApples(const Vector2D& playerPosition, ApplesGrid& grid, std::vector<Apple*>& result)
 	{
 		Vector2D playerCornerTL = playerPosition + Vector2D{ -PLAYER_SIZE / 2, -PLAYER_SIZE / 2 };
 		Vector2D playerCornerBR = playerPosition + Vector2D{ PLAYER_SIZE / 2, PLAYER_SIZE / 2 };
@@ -108,7 +108,7 @@ namespace ApplesGame
 		int minCellY = std::max((int)(playerCornerTL.y / cellSizeY), 0);
 		int maxCellY = std::min((int)(playerCornerBR.y / cellSizeY), (int)APPLES_GRID_CELLS_VERTICAL - 1);
 
-		numFoundApples = 0;
+		result.clear();
 		for (int cellX = minCellX; cellX <= maxCellX; ++cellX)
 		{
 			for (int cellY = minCellY; cellY <= maxCellY; ++cellY)
@@ -122,14 +122,13 @@ namespace ApplesGame
 						float distance = sqrt(dx * dx + dy * dy);
 						if (distance < (PLAYER_SIZE + APPLE_SIZE) / 2)
 						{
-							result[numFoundApples] = apple;
-							++numFoundApples;
+							result.push_back(apple);
 						}
 					}
 				}
 			}
 		}
 
-		return numFoundApples > 0;
+		return result.size() > 0;
 	}
 }
