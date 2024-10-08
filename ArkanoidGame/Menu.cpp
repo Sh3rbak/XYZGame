@@ -1,7 +1,7 @@
 #include "Menu.h"
 #include <assert.h>
 
-namespace ApplesGame
+namespace SnakeGame
 {
 	void InitMenuItem(MenuItem& item)
 	{
@@ -115,8 +115,7 @@ namespace ApplesGame
 			}
 		}
 
-		DrawItemsList(window, texts, expandedItem->childrenSpacing, expandedItem->childrenOrientation, 
-			expandedItem->childrenAlignment, position, origin);
+		DrawTextList(window, texts, expandedItem->childrenSpacing, expandedItem->childrenOrientation, expandedItem->childrenAlignment, position, origin);
 	}
 
 }

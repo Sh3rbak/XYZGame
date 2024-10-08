@@ -10,15 +10,6 @@
     <ClCompile Include="GameMain.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Math.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Apple.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -28,7 +19,7 @@
     <ClCompile Include="GameStateGameOver.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="GameStateExitDialog.cpp">
+    <ClCompile Include="GameStatePauseMenu.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="GameStateMainMenu.cpp">
@@ -37,7 +28,16 @@
     <ClCompile Include="Menu.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="GameStateLeaderBoard.cpp">
+    <ClCompile Include="GameStateRecords.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Snake.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp">
@@ -48,16 +48,7 @@
     <ClInclude Include="Game.h">
       <Filter>Sources</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="Apple.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
     <ClInclude Include="GameSettings.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="Math.h">
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="GameStatePlaying.h">
@@ -66,7 +57,7 @@
     <ClInclude Include="GameStateGameOver.h">
       <Filter>Sources</Filter>
     </ClInclude>
-    <ClInclude Include="GameStateExitDialog.h">
+    <ClInclude Include="GameStatePauseMenu.h">
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="GameStateMainMenu.h">
@@ -75,7 +66,19 @@
     <ClInclude Include="Menu.h">
       <Filter>Sources</Filter>
     </ClInclude>
-    <ClInclude Include="GameStateLeaderBoard.h">
+    <ClInclude Include="GameStateRecords.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Snake.h">
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="Application.h">
