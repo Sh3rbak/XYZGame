@@ -9,16 +9,16 @@ namespace SnakeGame {
 	public:
 		Application(const Application& app) = delete;
 		Application& operator= (const Application&) = delete;
-
+		
 		static Application& Instance();
 
 		void Run();
 
-		Game& GetGame() { return game; };
+		Game& GetGame() { return game; }
 
 	private:
 		Application();
-		~Application();
+		~Application() = default;
 
 	private:
 		Game game;

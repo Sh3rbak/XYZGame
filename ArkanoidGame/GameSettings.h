@@ -16,7 +16,6 @@ namespace SnakeGame
 	const unsigned int ROCK_SIZE = 15;
 	const float INITIAL_SPEED = 200.f;	// 
 	const float ACCELERATION = 10.f;	// For each eaten apple snake speed will be increased by this value
-	const int MIN_APPLES = 40;
 	const int MAX_APPLES = 80;
 	const unsigned int SCREEN_WIDTH = 800;
 	const unsigned int SCREEN_HEGHT = 600;
@@ -24,7 +23,7 @@ namespace SnakeGame
 	const unsigned int ROCKS_COUNT = 20;
 
 	const int MAX_RECORDS_TABLE_SIZE = 5;
-	extern const char* PLAYER_NAME; // We need to define this constant in some SPP
+	extern const char* PLAYER_NAME; // We need to define this constant in some CPP
 
 	const std::string GAME_NAME = "SnakeGame";
 }

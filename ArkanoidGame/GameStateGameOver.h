@@ -3,6 +3,8 @@
 
 namespace SnakeGame
 {
+	class Game;
+
 	struct GameStateGameOverData
 	{
 		// Resources

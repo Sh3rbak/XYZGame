@@ -12,7 +12,7 @@ namespace SnakeGame
 			SelectMenuItem(rootItem.childrens.front());
 		}
 	}
-
+	
 	void Menu::InitMenuItem(MenuItem& item)
 	{
 		for (auto& child : item.childrens)
@@ -43,7 +43,7 @@ namespace SnakeGame
 			position,
 			origin);
 	}
-
+	
 	void Menu::PressOnSelectedItem()
 	{
 		if (!selectedItem) {
@@ -74,13 +74,13 @@ namespace SnakeGame
 		if (!selectedItem) {
 			return;
 		}
-
+		
 		MenuItem* parent = selectedItem->parent;
 		assert(parent); // There always should be parent
 
 		auto it = std::find_if(parent->childrens.begin(), parent->childrens.end(), [this](const auto& item) {
 			return selectedItem == &item;
-			});
+		});
 		if (it != parent->childrens.begin()) {
 			SelectMenuItem(*std::prev(it));
 		}
@@ -91,10 +91,10 @@ namespace SnakeGame
 		if (!selectedItem) {
 			return;
 		}
-
+		
 		MenuItem* parent = selectedItem->parent;
 		assert(parent); // There always should be parent
-
+		
 		auto it = std::find_if(parent->childrens.begin(), parent->childrens.end(), [this](const auto& item) {
 			return selectedItem == &item;
 			});
