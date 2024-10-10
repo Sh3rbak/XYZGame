@@ -69,10 +69,20 @@
     <ClInclude Include="GameStateRecords.h">
       <Filter>Sources</Filter>
     </ClInclude>
-    <ClInclude Include="Vector.h" />
-    <ClInclude Include="Sprite.h" />
-    <ClInclude Include="Text.h" />
-    <ClInclude Include="Snake.h" />
-    <ClInclude Include="Application.h" />
+    <ClInclude Include="Application.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Snake.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

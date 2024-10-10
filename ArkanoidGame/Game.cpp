@@ -181,31 +181,31 @@ namespace SnakeGame
 		case GameStateType::MainMenu:
 		{
 			state.data = new GameStateMainMenuData();
-			InitGameStateMainMenu(*(GameStateMainMenuData*)state.data);
+			((GameStateMainMenuData*)state.data)->Init();
 			break;
 		}
 		case GameStateType::Playing:
 		{
 			state.data = new GameStatePlayingData();
-			InitGameStatePlaying(*(GameStatePlayingData*)state.data);
+			((GameStatePlayingData*)state.data)->Init();
 			break;
 		}
 		case GameStateType::GameOver:
 		{
 			state.data = new GameStateGameOverData();
-			InitGameStateGameOver(*(GameStateGameOverData*)state.data);
+			((GameStateGameOverData*)state.data)->Init();
 			break;
 		}
 		case GameStateType::ExitDialog:
 		{
 			state.data = new GameStatePauseMenuData();
-			InitGameStatePauseMenu(*(GameStatePauseMenuData*)state.data);
+			((GameStatePauseMenuData*)state.data)->Init();
 			break;
 		}
 		case GameStateType::Records:
 		{
 			state.data = new GameStateRecordsData();
-			InitGameStateRecords(*(GameStateRecordsData*)state.data);
+			((GameStateRecordsData*)state.data)->Init();
 			break;
 		}
 		default:
@@ -220,31 +220,26 @@ namespace SnakeGame
 		{
 		case GameStateType::MainMenu:
 		{
-			ShutdownGameStateMainMenu(*(GameStateMainMenuData*)state.data);
 			delete (GameStateMainMenuData*)state.data;
 			break;
 		}
 		case GameStateType::Playing:
 		{
-			ShutdownGameStatePlaying(*(GameStatePlayingData*)state.data);
 			delete (GameStatePlayingData*)state.data;
 			break;
 		}
 		case GameStateType::GameOver:
 		{
-			ShutdownGameStateGameOver(*(GameStateGameOverData*)state.data);
 			delete (GameStateGameOverData*)state.data;
 			break;
 		}
 		case GameStateType::ExitDialog:
 		{
-			ShutdownGameStatePauseMenu(*(GameStatePauseMenuData*)state.data);
 			delete (GameStatePauseMenuData*)state.data;
 			break;
 		}
 		case GameStateType::Records:
 		{
-			ShutdownGameStateRecords(*(GameStateRecordsData*)state.data);
 			delete (GameStateRecordsData*)state.data;
 			break;
 		}
@@ -262,27 +257,27 @@ namespace SnakeGame
 		{
 		case GameStateType::MainMenu:
 		{
-			HandleGameStateMainMenuWindowEvent(*(GameStateMainMenuData*)state.data, event);
+			((GameStateMainMenuData*)state.data)->HandleWindowEvent(event);
 			break;
 		}
 		case GameStateType::Playing:
 		{
-			HandleGameStatePlayingWindowEvent(*(GameStatePlayingData*)state.data, event);
+			((GameStatePlayingData*)state.data)->HandleWindowEvent(event);
 			break;
 		}
 		case GameStateType::GameOver:
 		{
-			HandleGameStateGameOverWindowEvent(*(GameStateGameOverData*)state.data, event);
+			((GameStateGameOverData*)state.data)->HandleWindowEvent(event);
 			break;
 		}
 		case GameStateType::ExitDialog:
 		{
-			HandleGameStatePauseMenuWindowEvent(*(GameStatePauseMenuData*)state.data, event);
+			((GameStatePauseMenuData*)state.data)->HandleWindowEvent(event);
 			break;
 		}
 		case GameStateType::Records:
 		{
-			HandleGameStateRecordsWindowEvent(*(GameStateRecordsData*)state.data, event);
+			((GameStateRecordsData*)state.data)->HandleWindowEvent(event);
 			break;
 		}
 		default:
@@ -297,27 +292,27 @@ namespace SnakeGame
 		{
 		case GameStateType::MainMenu:
 		{
-			UpdateGameStateMainMenu(*(GameStateMainMenuData*)state.data, timeDelta);
+			((GameStateMainMenuData*)state.data)->Update(timeDelta);
 			break;
 		}
 		case GameStateType::Playing:
 		{
-			UpdateGameStatePlaying(*(GameStatePlayingData*)state.data, timeDelta);
+			((GameStatePlayingData*)state.data)->Update(timeDelta);
 			break;
 		}
 		case GameStateType::GameOver:
 		{
-			UpdateGameStateGameOver(*(GameStateGameOverData*)state.data, timeDelta);
+			((GameStateGameOverData*)state.data)->Update(timeDelta);
 			break;
 		}
 		case GameStateType::ExitDialog:
 		{
-			UpdateGameStatePauseMenu(*(GameStatePauseMenuData*)state.data, timeDelta);
+			((GameStatePauseMenuData*)state.data)->Update(timeDelta);
 			break;
 		}
 		case GameStateType::Records:
 		{
-			UpdateGameStateRecords(*(GameStateRecordsData*)state.data, timeDelta);
+			((GameStateRecordsData*)state.data)->Update(timeDelta);
 			break;
 		}
 		default:
@@ -332,27 +327,27 @@ namespace SnakeGame
 		{
 		case GameStateType::MainMenu:
 		{
-			DrawGameStateMainMenu(*(GameStateMainMenuData*)state.data, window);
+			((GameStateMainMenuData*)state.data)->Draw(window);
 			break;
 		}
 		case GameStateType::Playing:
 		{
-			DrawGameStatePlaying(*(GameStatePlayingData*)state.data, window);
+			((GameStatePlayingData*)state.data)->Draw(window);
 			break;
 		}
 		case GameStateType::GameOver:
 		{
-			DrawGameStateGameOver(*(GameStateGameOverData*)state.data, window);
+			((GameStateGameOverData*)state.data)->Draw(window);
 			break;
 		}
 		case GameStateType::ExitDialog:
 		{
-			DrawGameStatePauseMenu(*(GameStatePauseMenuData*)state.data, window);
+			((GameStatePauseMenuData*)state.data)->Draw(window);
 			break;
 		}
 		case GameStateType::Records:
 		{
-			DrawGameStateRecords(*(GameStateRecordsData*)state.data, window);
+			((GameStateRecordsData*)state.data)->Draw(window);
 			break;
 		}
 		default:
