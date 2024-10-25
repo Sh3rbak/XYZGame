@@ -1,11 +1,5 @@
 #include "Game.h"
-#include <assert.h>
 #include <algorithm>
-#include "GameStatePlaying.h"
-#include "GameStateGameOver.h"
-#include "GameStatePauseMenu.h"
-#include "GameStateMainMenu.h"
-#include "GameStateRecords.h"
 
 namespace SnakeGame
 {
@@ -45,7 +39,7 @@ namespace SnakeGame
 
 			if (stateStack.size() > 0)
 			{
-				HandleWindowEventGameState(stateStack.back(), event);
+				stateStack.back().HandleWindowEvent(event);
 			}
 		}
 	}
@@ -57,7 +51,6 @@ namespace SnakeGame
 			// Shutdown all game states
 			while (stateStack.size() > 0)
 			{
-				ShutdownGameState(stateStack.back());
 				stateStack.pop_back();
 			}
 		}
@@ -66,7 +59,6 @@ namespace SnakeGame
 			// Shutdown only current game state
 			if (stateStack.size() > 0)
 			{
-				ShutdownGameState(stateStack.back());
 				stateStack.pop_back();
 			}
 		}
@@ -74,8 +66,7 @@ namespace SnakeGame
 		// Initialize new game state if needed
 		if (pendingGameStateType != GameStateType::None)
 		{
-			stateStack.push_back({ pendingGameStateType, nullptr, pendingGameStateIsExclusivelyVisible });
-			InitGameState(stateStack.back());
+			stateStack.push_back(GameState( pendingGameStateType, pendingGameStateIsExclusivelyVisible ));
 		}
 
 		stateChangeType = GameStateChangeType::None;
@@ -84,7 +75,7 @@ namespace SnakeGame
 
 		if (stateStack.size() > 0)
 		{
-			UpdateGameState(stateStack.back(), timeDelta);
+			stateStack.back().Update(timeDelta);
 			return true;
 		}
 
@@ -99,7 +90,7 @@ namespace SnakeGame
 			for (auto it = stateStack.rbegin(); it != stateStack.rend(); ++it)
 			{
 				visibleGameStates.push_back(&(*it));
-				if (it->isExclusivelyVisible)
+				if (it->IsExclusivelyVisible())
 				{
 					break;
 				}
@@ -107,7 +98,7 @@ namespace SnakeGame
 
 			for (auto it = visibleGameStates.rbegin(); it != visibleGameStates.rend(); ++it)
 			{
-				DrawGameState(**it, window);
+				(*it)->Draw(window);
 			}
 		}
 	}
@@ -117,7 +108,6 @@ namespace SnakeGame
 		// Shutdown all game states
 		while (stateStack.size() > 0)
 		{
-			ShutdownGameState(stateStack.back());
 			stateStack.pop_back();
 		}
 
@@ -172,187 +162,5 @@ namespace SnakeGame
 	void Game::UpdateRecord(const std::string& playerId, int score)
 	{
 		recordsTable[playerId] = std::max(recordsTable[playerId], score);
-	}
-
-	void InitGameState(GameState& state)
-	{
-		switch (state.type)
-		{
-		case GameStateType::MainMenu:
-		{
-			state.data = new GameStateMainMenuData();
-			((GameStateMainMenuData*)state.data)->Init();
-			break;
-		}
-		case GameStateType::Playing:
-		{
-			state.data = new GameStatePlayingData();
-			((GameStatePlayingData*)state.data)->Init();
-			break;
-		}
-		case GameStateType::GameOver:
-		{
-			state.data = new GameStateGameOverData();
-			((GameStateGameOverData*)state.data)->Init();
-			break;
-		}
-		case GameStateType::ExitDialog:
-		{
-			state.data = new GameStatePauseMenuData();
-			((GameStatePauseMenuData*)state.data)->Init();
-			break;
-		}
-		case GameStateType::Records:
-		{
-			state.data = new GameStateRecordsData();
-			((GameStateRecordsData*)state.data)->Init();
-			break;
-		}
-		default:
-			assert(false); // We want to know if we forgot to implement new game state
-			break;
-		}
-	}
-
-	void ShutdownGameState(GameState& state)
-	{
-		switch (state.type)
-		{
-		case GameStateType::MainMenu:
-		{
-			delete (GameStateMainMenuData*)state.data;
-			break;
-		}
-		case GameStateType::Playing:
-		{
-			delete (GameStatePlayingData*)state.data;
-			break;
-		}
-		case GameStateType::GameOver:
-		{
-			delete (GameStateGameOverData*)state.data;
-			break;
-		}
-		case GameStateType::ExitDialog:
-		{
-			delete (GameStatePauseMenuData*)state.data;
-			break;
-		}
-		case GameStateType::Records:
-		{
-			delete (GameStateRecordsData*)state.data;
-			break;
-		}
-		default:
-			assert(false); // We want to know if we forgot to implement new game state
-			break;
-		}
-
-		state.data = nullptr;
-	}
-
-	void HandleWindowEventGameState(GameState& state, sf::Event& event)
-	{
-		switch (state.type)
-		{
-		case GameStateType::MainMenu:
-		{
-			((GameStateMainMenuData*)state.data)->HandleWindowEvent(event);
-			break;
-		}
-		case GameStateType::Playing:
-		{
-			((GameStatePlayingData*)state.data)->HandleWindowEvent(event);
-			break;
-		}
-		case GameStateType::GameOver:
-		{
-			((GameStateGameOverData*)state.data)->HandleWindowEvent(event);
-			break;
-		}
-		case GameStateType::ExitDialog:
-		{
-			((GameStatePauseMenuData*)state.data)->HandleWindowEvent(event);
-			break;
-		}
-		case GameStateType::Records:
-		{
-			((GameStateRecordsData*)state.data)->HandleWindowEvent(event);
-			break;
-		}
-		default:
-			assert(false); // We want to know if we forgot to implement new game state
-			break;
-		}
-	}
-
-	void UpdateGameState(GameState& state, float timeDelta)
-	{
-		switch (state.type)
-		{
-		case GameStateType::MainMenu:
-		{
-			((GameStateMainMenuData*)state.data)->Update(timeDelta);
-			break;
-		}
-		case GameStateType::Playing:
-		{
-			((GameStatePlayingData*)state.data)->Update(timeDelta);
-			break;
-		}
-		case GameStateType::GameOver:
-		{
-			((GameStateGameOverData*)state.data)->Update(timeDelta);
-			break;
-		}
-		case GameStateType::ExitDialog:
-		{
-			((GameStatePauseMenuData*)state.data)->Update(timeDelta);
-			break;
-		}
-		case GameStateType::Records:
-		{
-			((GameStateRecordsData*)state.data)->Update(timeDelta);
-			break;
-		}
-		default:
-			assert(false); // We want to know if we forgot to implement new game state
-			break;
-		}
-	}
-
-	void DrawGameState(GameState& state, sf::RenderWindow& window)
-	{
-		switch (state.type)
-		{
-		case GameStateType::MainMenu:
-		{
-			((GameStateMainMenuData*)state.data)->Draw(window);
-			break;
-		}
-		case GameStateType::Playing:
-		{
-			((GameStatePlayingData*)state.data)->Draw(window);
-			break;
-		}
-		case GameStateType::GameOver:
-		{
-			((GameStateGameOverData*)state.data)->Draw(window);
-			break;
-		}
-		case GameStateType::ExitDialog:
-		{
-			((GameStatePauseMenuData*)state.data)->Draw(window);
-			break;
-		}
-		case GameStateType::Records:
-		{
-			((GameStateRecordsData*)state.data)->Draw(window);
-			break;
-		}
-		default:
-			assert(false); // We want to know if we forgot to implement new game state
-			break;
-		}
 	}
 }
