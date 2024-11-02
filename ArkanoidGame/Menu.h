@@ -5,7 +5,7 @@
 #include <functional>
 
 
-namespace SnakeGame
+namespace ArcanoidGame
 {
 	struct MenuItem
 	{
@@ -30,8 +30,6 @@ namespace SnakeGame
 	{
 	public:
 		void Init(const MenuItem& item);
-
-		void Update(float deltaTime);
 
 		void Draw(sf::RenderWindow& window, sf::Vector2f position, sf::Vector2f origin);
 

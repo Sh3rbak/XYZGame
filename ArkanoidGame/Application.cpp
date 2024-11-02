@@ -1,7 +1,7 @@
 #include "Application.h"
 #include <cstdlib>
 
-namespace SnakeGame
+namespace ArcanoidGame
 {
 	Application& Application::Instance()
 	{

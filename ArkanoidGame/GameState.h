@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-namespace SnakeGame
+namespace ArcanoidGame
 {
 	enum class GameStateType
 	{

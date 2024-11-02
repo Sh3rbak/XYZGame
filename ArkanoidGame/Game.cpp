@@ -1,18 +1,18 @@
 #include "Game.h"
 #include <algorithm>
 
-namespace SnakeGame
+namespace ArcanoidGame
 {
 	Game::Game()
 	{
 		// Generate fake records table
 		recordsTable =
 		{
-			{"John", MAX_APPLES / 2},
-			{"Jane", MAX_APPLES / 3 },
-			{"Alice", MAX_APPLES / 4 },
-			{"Bob", MAX_APPLES / 5 },
-			{"Clementine", MAX_APPLES / 5 },
+			{"John", 5},
+			{"Jane", 4 },
+			{"Alice", 3 },
+			{"Bob", 2 },
+			{"Clementine", 1 },
 		};
 
 		stateChangeType = GameStateChangeType::None;

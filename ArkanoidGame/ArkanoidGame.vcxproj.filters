@@ -37,13 +37,19 @@
     <ClCompile Include="Text.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Snake.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Application.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="GameState.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Ball.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -84,10 +90,16 @@
     <ClInclude Include="Sprite.h">
       <Filter>Sources</Filter>
     </ClInclude>
-    <ClInclude Include="Snake.h">
+    <ClInclude Include="GameState.h">
       <Filter>Sources</Filter>
     </ClInclude>
-    <ClInclude Include="GameState.h">
+    <ClInclude Include="Platform.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Ball.h">
       <Filter>Sources</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,7 +5,7 @@
 #include <assert.h>
 #include <sstream>
 
-namespace SnakeGame
+namespace ArcanoidGame
 {
 	const char* PLAYER_NAME = "Player";
 

@@ -6,7 +6,7 @@
 #include "GameStateRecords.h"
 #include <assert.h>
 
-namespace SnakeGame
+namespace ArcanoidGame
 {
 	GameState::GameState(GameStateType type, bool isExclusivelyVisible) :
 		type(type),

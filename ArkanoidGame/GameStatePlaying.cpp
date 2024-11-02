@@ -5,42 +5,22 @@
 #include <assert.h>
 #include <sstream>
 
-namespace SnakeGame
+namespace
+{
+	const std::string FONT_ID = "Roboto-Regular";
+	const std::string GAMEOVER_SOUND_ID = "Death";
+}
+
+namespace ArcanoidGame
 {
 	void GameStatePlayingData::Init()
 	{	
 		// Init game resources (terminate if error)
-		LoadSnakeTextures(snake);
-		assert(appleTexture.loadFromFile(TEXTURES_PATH + "Apple.png"));
-		assert(rockTexture.loadFromFile(TEXTURES_PATH + "Rock.png"));
-		assert(font.loadFromFile(FONTS_PATH + "Roboto-Regular.ttf"));
-		assert(eatAppleSoundBuffer.loadFromFile(SOUNDS_PATH + "AppleEat.wav"));
-		assert(gameOverSoundBuffer.loadFromFile(SOUNDS_PATH + "Death.wav"));
+		assert(font.loadFromFile(FONTS_PATH + FONT_ID + ".ttf"));
+		assert(gameOverSoundBuffer.loadFromFile(SOUNDS_PATH + GAMEOVER_SOUND_ID + ".wav"));
 
-		// Init background
-		background.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEGHT));
-		background.setPosition(0.f, 0.f);
-		background.setFillColor(sf::Color(0, 200, 0));
-
-		// Init snake
-		InitSnake(snake);
-
-		// Init apple
-		InitSprite(apple, APPLE_SIZE, APPLE_SIZE, appleTexture);
-		SetSpriteRandomPosition(apple, background.getGlobalBounds(), snake.body);
-
-		// Init rocks
-		rocks.resize(ROCKS_COUNT);
-		for (sf::Sprite& rock : rocks) {
-			InitSprite(rock, ROCK_SIZE, ROCK_SIZE, rockTexture);
-			SetSpriteRandomPosition(rock, background.getGlobalBounds(), snake.body);
-		}
-
-		numEatenApples = 0;
-
-		scoreText.setFont(font);
-		scoreText.setCharacterSize(24);
-		scoreText.setFillColor(sf::Color::Yellow);
+		platform.Init();
+		ball.Init();
 
 		inputHintText.setFont(font);
 		inputHintText.setCharacterSize(24);
@@ -49,7 +29,6 @@ namespace SnakeGame
 		inputHintText.setOrigin(GetTextOrigin(inputHintText, { 1.f, 0.f }));
 
 		// Init sounds
-		eatAppleSound.setBuffer(eatAppleSoundBuffer);
 		gameOverSound.setBuffer(gameOverSoundBuffer);
 	}
 
@@ -66,78 +45,28 @@ namespace SnakeGame
 
 	void GameStatePlayingData::Update(float timeDelta)
 	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		platform.Update(timeDelta);
+		ball.Update(timeDelta);
+
+		if (ball.CheckCollisionWithRectangle(platform))
 		{
-			snake.direction = SnakeDirection::Up;
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		{
-			snake.direction = SnakeDirection::Right;
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		{
-			snake.direction = SnakeDirection::Down;
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		{
-			snake.direction = SnakeDirection::Left;
+			ball.BounceOffHorizontalSide();
 		}
 
-		// Update snake
-		MoveSnake(snake, timeDelta);
-
-		if (CheckSpriteIntersection(*snake.head, apple)) {
-			eatAppleSound.play();
-
-			GrowSnake(snake);
-
-			// Increase eaten apples counter
-			numEatenApples++;
-			
-			// Move apple to a new random position
-			SetSpriteRandomPosition(apple, background.getGlobalBounds(), snake.body);
-
-			// Increase snake speed
-			if (Application::Instance().GetGame().IsEnableOptions(GameOptions::WithAcceleration)) {
-				snake.speed += ACCELERATION;
-			}
-		}
-
-		const bool isGameFinished = numEatenApples == MAX_APPLES && !Application::Instance().GetGame().IsEnableOptions(GameOptions::InfiniteApples);
-		
-		if (isGameFinished
-			|| !HasSnakeCollisionWithRect(snake, background.getGlobalBounds()) // Check collision with screen border
-			|| CheckSnakeCollisionWithHimself(snake)		// Check collision with screen border
-			|| FullCheckCollisions(rocks.begin(), rocks.end(), *snake.head)) // Check collision with rocks
+		const bool isGameFinished = ball.GetPosition().y + BALL_SIZE / 2.f > SCREEN_HEGHT;
+		if (isGameFinished)
 		{
 			gameOverSound.play();
-			
-			Game& game = Application::Instance().GetGame();
 
-			// Find snake in records table and update his score
-			game.UpdateRecord(PLAYER_NAME, numEatenApples);
+			Game& game = Application::Instance().GetGame();
 			game.PushState(GameStateType::GameOver, false);
 		}
-
-		scoreText.setString("Apples eaten: " + std::to_string(numEatenApples));
 	}
 
 	void GameStatePlayingData::Draw(sf::RenderWindow& window)
 	{
-		// Draw background
-		window.draw(background);
-
-		// Draw snake
-		DrawSnake(snake, window);
-		// Draw apples
-		DrawSprite(apple, window);
-		// Draw rocks
-		DrawSprites(rocks.begin(), rocks.end(), window);
-
-		scoreText.setOrigin(GetTextOrigin(scoreText, { 0.f, 0.f }));
-		scoreText.setPosition(10.f, 10.f);
-		window.draw(scoreText);
-
+		platform.Draw(window);
+		ball.Draw(window);
 		sf::Vector2f viewSize = window.getView().getSize();
 		inputHintText.setPosition(viewSize.x - 10.f, 10.f);
 		window.draw(inputHintText);
