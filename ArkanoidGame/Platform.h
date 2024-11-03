@@ -7,8 +7,8 @@ namespace ArcanoidGame
 	class Platform : public GameObject
 	{
 	public:
-		void Init();
-		void Update(float timeDelta);
+		void Init() override;
+		void Update(float timeDelta) override;
 	private:
 		void Move(float speed);
 	};

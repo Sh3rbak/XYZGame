@@ -7,8 +7,8 @@ namespace ArcanoidGame
 	class Ball : public GameObject
 	{
 	public:
-		void Init();
-		void Update(float timeDelta);
+		void Init() override;
+		void Update(float timeDelta) override;
 		void BounceOffHorizontalSide();
 		void BounceOffVerticalSide();
 		bool CheckCollisionWithRectangle(GameObject& platform);

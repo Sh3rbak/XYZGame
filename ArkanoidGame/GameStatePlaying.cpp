@@ -19,8 +19,13 @@ namespace ArcanoidGame
 		assert(font.loadFromFile(FONTS_PATH + FONT_ID + ".ttf"));
 		assert(gameOverSoundBuffer.loadFromFile(SOUNDS_PATH + GAMEOVER_SOUND_ID + ".wav"));
 
-		platform.Init();
-		ball.Init();
+		gameObjects.emplace_back(std::make_shared<Platform>());
+		gameObjects.emplace_back(std::make_shared<Ball>());
+
+		for (auto&& object : gameObjects)
+		{
+			object->Init();
+		}
 
 		inputHintText.setFont(font);
 		inputHintText.setCharacterSize(24);
@@ -45,15 +50,21 @@ namespace ArcanoidGame
 
 	void GameStatePlayingData::Update(float timeDelta)
 	{
-		platform.Update(timeDelta);
-		ball.Update(timeDelta);
-
-		if (ball.CheckCollisionWithRectangle(platform))
+		for (auto&& object : gameObjects)
 		{
-			ball.BounceOffHorizontalSide();
+			object->Update(timeDelta);
 		}
 
-		const bool isGameFinished = ball.GetPosition().y + BALL_SIZE / 2.f > SCREEN_HEGHT;
+		Platform* platform = (Platform*)gameObjects[0].get();
+		Ball* ball = (Ball*)gameObjects[1].get();
+
+		const bool isCollision = ball->CheckCollisionWithRectangle(*platform);
+		if (isCollision)
+		{
+			ball->BounceOffHorizontalSide();
+		}
+
+		const bool isGameFinished = !isCollision && ball->GetPosition().y + BALL_SIZE / 2.f > SCREEN_HEGHT;
 		if (isGameFinished)
 		{
 			gameOverSound.play();
@@ -65,10 +76,13 @@ namespace ArcanoidGame
 
 	void GameStatePlayingData::Draw(sf::RenderWindow& window)
 	{
-		platform.Draw(window);
-		ball.Draw(window);
 		sf::Vector2f viewSize = window.getView().getSize();
 		inputHintText.setPosition(viewSize.x - 10.f, 10.f);
 		window.draw(inputHintText);
+
+		for (auto&& object : gameObjects)
+		{
+			object->Draw(window);
+		}
 	}
 }
