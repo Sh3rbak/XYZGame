@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "GameObject.h"
 
-namespace ArcanoidGame
+namespace ArkanoidGame
 {
 	class Platform : public GameObject
 	{

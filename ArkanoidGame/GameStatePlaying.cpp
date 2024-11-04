@@ -11,7 +11,7 @@ namespace
 	const std::string GAMEOVER_SOUND_ID = "Death";
 }
 
-namespace ArcanoidGame
+namespace ArkanoidGame
 {
 	void GameStatePlayingData::Init()
 	{	

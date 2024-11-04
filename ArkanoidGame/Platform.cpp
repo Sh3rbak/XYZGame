@@ -9,7 +9,7 @@ namespace
 	const std::string TEXTURE_ID = "Platform";
 }
 
-namespace ArcanoidGame
+namespace ArkanoidGame
 {
 	void Platform::Init()
 	{

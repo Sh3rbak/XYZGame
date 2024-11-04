@@ -8,7 +8,7 @@ namespace
 	std::string TEXTURE_ID = "Ball";
 }
 
-namespace ArcanoidGame
+namespace ArkanoidGame
 {
 	void Ball::Init()
 	{
@@ -26,7 +26,7 @@ namespace ArcanoidGame
 
 	void Ball::Update(float timeDelta)
 	{
-		sf::Vector2f const position = sprite.getPosition() + timeDelta * INITIAL_SPEED_BALL * direction;
+		sf::Vector2f const position = sprite.getPosition() + timeDelta * BALL_SPEED * direction;
 		sprite.setPosition(position);
 
 		if (position.x - BALL_SIZE / 2.f < 0 || position.x + BALL_SIZE / 2.f > SCREEN_WIDTH)

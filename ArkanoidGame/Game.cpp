@@ -1,7 +1,7 @@
 #include "Game.h"
 #include <algorithm>
 
-namespace ArcanoidGame
+namespace ArkanoidGame
 {
 	Game::Game()
 	{

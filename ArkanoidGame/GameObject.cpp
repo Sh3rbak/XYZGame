@@ -1,7 +1,7 @@
 #include "GameObject.h"
 #include "Sprite.h"
 
-namespace ArcanoidGame
+namespace ArkanoidGame
 {
 	void GameObject::Draw(sf::RenderWindow& window)
 	{

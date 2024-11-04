@@ -5,7 +5,7 @@
 #include "Application.h"
 
 
-using namespace ArcanoidGame;
+using namespace ArkanoidGame;
 
 int main()
 {

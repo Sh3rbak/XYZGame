@@ -102,5 +102,8 @@
     <ClInclude Include="Ball.h">
       <Filter>Sources</Filter>
     </ClInclude>
+    <ClInclude Include="GameStateData.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

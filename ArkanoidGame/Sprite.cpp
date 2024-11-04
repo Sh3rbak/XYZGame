@@ -2,7 +2,7 @@
 #include "GameSettings.h"
 
 
-namespace ArcanoidGame
+namespace ArkanoidGame
 {
 	void InitSprite(sf::Sprite& sprite, float desiredWidth, float desiredHeight, const sf::Texture& texture)
 	{

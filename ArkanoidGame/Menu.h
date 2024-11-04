@@ -5,7 +5,7 @@
 #include <functional>
 
 
-namespace ArcanoidGame
+namespace ArkanoidGame
 {
 	struct MenuItem
 	{

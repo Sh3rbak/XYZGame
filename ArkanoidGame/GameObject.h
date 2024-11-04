@@ -1,11 +1,13 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-namespace ArcanoidGame
+namespace ArkanoidGame
 {
 	class GameObject
 	{
 	public:
+		virtual ~GameObject() = default;
+
 		virtual void Init() = 0;
 		virtual void Update(float timeDelta) = 0;
 		virtual void Draw(sf::RenderWindow& window);

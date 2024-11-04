@@ -1,7 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "GameStateData.h"
 
-namespace ArcanoidGame
+namespace ArkanoidGame
 {
 	enum class GameStateType
 	{
@@ -12,43 +13,42 @@ namespace ArcanoidGame
 		ExitDialog,
 		Records,
 	};
-
+	
 	class GameState
 	{
 	public:
 		GameState() = default;
 		GameState(GameStateType type, bool isExclusivelyVisible);
-		GameState(GameState&& state) noexcept :
-			type(std::move(state.type)),
-			isExclusivelyVisible(std::move(state.isExclusivelyVisible))
-		{
-			data = state.data;
-			state.data = nullptr;
-		}
-
-		GameState& operator=(GameState&& state) noexcept
-		{
-			type = state.type;
-			data = state.data;
-			isExclusivelyVisible = state.isExclusivelyVisible;
-			state.data = nullptr;
-
-			return *this;
-		}
+		GameState(const GameState& state) = delete;
+		GameState(GameState&& state) noexcept { operator=(std::move(state)); }
 
 		~GameState();
 
-		GameStateType GetType() const { return type; };
-		bool IsExclusivelyVisible() const { return isExclusivelyVisible; };
+		GameState& operator= (const GameState& state) = delete;
+		GameState& operator= (GameState&& state) noexcept {
+			type = state.type;
+			data = std::move(state.data);
+			isExclusivelyVisible = state.isExclusivelyVisible;
+			state.data = nullptr;
+			return *this;
+		}
 
-		void HandleWindowEvent(sf::Event& event);
+		GameStateType GetType() const { return type; }
+		bool IsExclusivelyVisible() const { return isExclusivelyVisible; }
+
+		template<class T>
+		T* GetData() const {
+			return static_cast<T>(data);
+		}
+
 		void Update(float timeDelta);
 		void Draw(sf::RenderWindow& window);
+		void HandleWindowEvent(sf::Event& event);
 
 	private:
 		GameStateType type = GameStateType::None;
-		void* data = nullptr;
+		std::unique_ptr<GameStateData> data = nullptr;
 		bool isExclusivelyVisible = false;
 	};
-}
 
+}
