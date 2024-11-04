@@ -14,13 +14,30 @@ namespace
 namespace ArkanoidGame
 {
 	void GameStatePlayingData::Init()
-	{	
+	{
 		// Init game resources (terminate if error)
 		assert(font.loadFromFile(FONTS_PATH + FONT_ID + ".ttf"));
 		assert(gameOverSoundBuffer.loadFromFile(SOUNDS_PATH + GAMEOVER_SOUND_ID + ".wav"));
 
 		gameObjects.emplace_back(std::make_shared<Platform>());
 		gameObjects.emplace_back(std::make_shared<Ball>());
+
+		positionsBlocks.push_back("-0--0--0-"); // 0 - block, 
+		positionsBlocks.push_back("0---0---0"); // - - empty
+		positionsBlocks.push_back("--0-0-0--");
+		positionsBlocks.push_back("-0--0--0-");
+		positionsBlocks.push_back("--0-0-0--");
+
+		for (auto&& row : positionsBlocks)
+		{
+			for (int i = 0; i < row.size(); ++i)
+			{
+				if (row[i] == '0')
+				{
+					gameObjects.emplace_back(std::make_shared<Block>());
+				}
+			}
+		}
 
 		for (auto&& object : gameObjects)
 		{
@@ -35,6 +52,26 @@ namespace ArkanoidGame
 
 		// Init sounds
 		gameOverSound.setBuffer(gameOverSoundBuffer);
+
+		// Set position every blocks
+		int index = 2;
+		const float verticalSpacing = static_cast<float>(SCREEN_HEGHT / 2.f / (positionsBlocks.size() - 1));
+		for (int row = 0; row < positionsBlocks.size(); ++row)
+		{
+			const float horizontalSpacing = static_cast<float>(SCREEN_WIDTH / (positionsBlocks[row].size() - 1));
+			for (int column = 0; column < positionsBlocks[row].size(); ++column)
+			{
+				if (positionsBlocks[row][column] == '0')
+				{
+					sf::Vector2f posBlock;
+					posBlock.x = horizontalSpacing * column + BLOCK_WIDTH / 2.f;
+					posBlock.y = verticalSpacing * row + BLOCK_HEGHT / 2.f;
+					Block* block = (Block*)gameObjects[index].get();
+					block->SetPosition(posBlock);
+					++index;
+				}
+			}
+		}
 	}
 
 	void GameStatePlayingData::HandleWindowEvent(const sf::Event& event)

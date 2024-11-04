@@ -13,8 +13,13 @@ namespace ArkanoidGame
 	const float SPEED_PLATFORM = 200.f;
 	const unsigned int PLATFORM_WIDTH = 50;
 	const unsigned int PLATFORM_HEGHT = 8;
+
+	const unsigned int BLOCK_WIDTH = 40;
+	const unsigned int BLOCK_HEGHT = 10;
+
 	const unsigned int BALL_SIZE = 20;
 	const unsigned int BALL_SPEED = 200;
+
 	const unsigned int SCREEN_WIDTH = 800;
 	const unsigned int SCREEN_HEGHT = 600;
 	const float TIME_PER_FRAME = 1.f / 60.f; // 60 fps

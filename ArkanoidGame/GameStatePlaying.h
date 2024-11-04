@@ -3,6 +3,7 @@
 #include "SFML/Audio.hpp"
 #include "Platform.h"
 #include "Ball.h"
+#include "Block.h"
 #include "GameStateData.h"
 
 namespace ArkanoidGame
@@ -24,6 +25,7 @@ namespace ArkanoidGame
 
 		// Game data
 		std::vector<std::shared_ptr<GameObject>> gameObjects;
+		std::vector<std::string> positionsBlocks;
 
 		// UI data
 		sf::Text inputHintText;
