@@ -22,7 +22,6 @@ namespace ArkanoidGame
 
 	void Block::Update(float timeDelta)
 	{
-
 	}
 
 	void Block::SetPosition(sf::Vector2f position)

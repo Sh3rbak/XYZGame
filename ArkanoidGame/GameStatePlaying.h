@@ -19,6 +19,10 @@ namespace ArkanoidGame
 		void Draw(sf::RenderWindow& window) override;
 
 	private:
+		void SetPositionEveryBlocks(int indexFirstBlock);
+		bool DeserializeGame();
+
+	private:
 		// Resources
 		sf::Font font;
 		sf::SoundBuffer gameOverSoundBuffer;
@@ -26,6 +30,7 @@ namespace ArkanoidGame
 		// Game data
 		std::vector<std::shared_ptr<GameObject>> gameObjects;
 		std::vector<std::string> positionsBlocks;
+		unsigned int numBrokenBlocks;
 
 		// UI data
 		sf::Text inputHintText;

@@ -4,6 +4,7 @@
 namespace ArkanoidGame
 {
 	// Resources path
+	const std::string LEVELS_PATH = "Levels/";
 	const std::string RESOURCES_PATH = "Resources/";
 	const std::string TEXTURES_PATH = RESOURCES_PATH + "Textures/";
 	const std::string FONTS_PATH = RESOURCES_PATH + "Fonts/";

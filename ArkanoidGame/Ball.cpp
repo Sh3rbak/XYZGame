@@ -31,75 +31,162 @@ namespace ArkanoidGame
 
 		if (position.x - BALL_SIZE / 2.f < 0 || position.x + BALL_SIZE / 2.f > SCREEN_WIDTH)
 		{
-			BounceOffVerticalSide();
+			BounceOffVerticalWall();
 		}
 
 		if (position.y - BALL_SIZE / 2.f < 0 || position.y + BALL_SIZE / 2.f > SCREEN_HEGHT)
 		{
-			BounceOffHorizontalSide();
+			BounceOffHorizontalWall();
 		}
 	}
 
-	void Ball::BounceOffHorizontalSide()
+	void Ball::BounceOffHorizontalWall()
 	{
 		direction.y *= -1;
 	}
-	void Ball::BounceOffVerticalSide()
+	void Ball::BounceOffVerticalWall()
 	{
 		direction.x *= -1;
 	}
 
-	bool Ball::CheckCollisionWithRectangle(GameObject& platform)
+	void Ball::BounceOffCorner()
+	{
+		direction.x *= -1;
+		direction.y *= -1;
+	}
+
+	bool Ball::ChangeDirectionWhenHit(const GameObject& rectangle)
+	{
+		sf::FloatRect rectPlatform = rectangle.GetRect();
+		if (CheckCollisionWithHorizontalWall(rectPlatform))
+		{
+			BounceOffHorizontalWall();
+			return true;
+		} 
+		else if (CheckCollisionWithVerticalWall(rectPlatform))
+		{
+			BounceOffVerticalWall();
+			return true;
+		}
+		else if (CheckCollisionWithCorner(rectPlatform))
+		{
+			if (IsFarCornerHorizontal(rectPlatform))
+			{
+				BounceOffHorizontalWall();
+			} 
+			else if (IsFarCornerVertical(rectPlatform))
+			{
+				BounceOffVerticalWall();
+			}
+			else
+			{
+			   BounceOffCorner();
+			}
+			return true;
+		}
+		return false;
+	}
+
+	bool Ball::CheckCollisionWithHorizontalWall(const sf::FloatRect& rect) const
+	{
+		sf::Vector2f const positionBall = sprite.getPosition();
+
+		if (rect.left < positionBall.x && positionBall.x < rect.left + rect.width)
+		{
+			if (positionBall.y < rect.top)
+			{
+				return std::fabs(positionBall.y - rect.top) < BALL_SIZE / 2.f;
+			}
+
+			return std::fabs(positionBall.y - (rect.top + rect.height)) < BALL_SIZE / 2.f;
+		}
+		return false;
+	}
+
+	bool Ball::CheckCollisionWithVerticalWall(const sf::FloatRect& rect) const
+	{
+		sf::Vector2f const positionBall = sprite.getPosition();
+
+		if (rect.top < positionBall.y && positionBall.y < rect.top + rect.height)
+		{
+			if (positionBall.x < rect.left)
+			{
+				return std::fabs(positionBall.x - rect.left) < BALL_SIZE / 2.f;
+			}
+			if (positionBall.x > rect.left + rect.width)
+			{
+				return std::fabs(positionBall.x - (rect.left + rect.width)) < BALL_SIZE / 2.f;
+			}
+		}
+		return false;
+	}
+
+	bool Ball::CheckCollisionWithCorner(const sf::FloatRect& rect) const
 	{
 		auto sqr = [](float delta)
 			{
 				return delta * delta;
 			};
 
-		sf::FloatRect const rectPlatform = platform.GetRect();
 		sf::Vector2f const positionBall = sprite.getPosition();
 
-		if (positionBall.x < rectPlatform.left)
+		if (positionBall.x < rect.left)
 		{
-			const float deltaX = sqr(positionBall.x - rectPlatform.left);
-			if (positionBall.y < rectPlatform.top)
+			const float deltaX = sqr(positionBall.x - rect.left);
+			if (positionBall.y < rect.top)
 			{
-				const float deltaY = sqr(positionBall.y - rectPlatform.top);
+				const float deltaY = sqr(positionBall.y - rect.top);
 				return deltaX + deltaY < sqr(BALL_SIZE / 2.f);
 			}
 
-			if (positionBall.y > rectPlatform.top)
+			if (positionBall.y > rect.top)
 			{
-				const float deltaY = sqr(positionBall.y - rectPlatform.top + rectPlatform.height);
+				const float deltaY = sqr(positionBall.y - (rect.top + rect.height));
 				return deltaX + deltaY < sqr(BALL_SIZE / 2.f);
 			}
-
-			return std::fabs(positionBall.x - rectPlatform.left) < sqr(BALL_SIZE / 2.f);
 		}
 
-		if (positionBall.x > rectPlatform.left + rectPlatform.width)
+		if (positionBall.x > rect.left + rect.width)
 		{
-			const float deltaX = sqr(positionBall.x - rectPlatform.left + rectPlatform.width);
-			if (positionBall.y < rectPlatform.top)
+			const float deltaX = sqr(positionBall.x - (rect.left + rect.width));
+			if (positionBall.y < rect.top)
 			{
-				const float deltaY = sqr(positionBall.y - rectPlatform.top);
+				const float deltaY = sqr(positionBall.y - rect.top);
 				return deltaX + deltaY < sqr(BALL_SIZE / 2.f);
 			}
 
-			if (positionBall.y > rectPlatform.top)
+			if (positionBall.y > rect.top)
 			{
-				const float deltaY = sqr(positionBall.y - rectPlatform.top + rectPlatform.height);
+				const float deltaY = sqr(positionBall.y - (rect.top + rect.height));
 				return deltaX + deltaY < sqr(BALL_SIZE / 2.f);
 			}
-
-			return std::fabs(positionBall.x - rectPlatform.left + rectPlatform.width) < sqr(BALL_SIZE / 2.f);
 		}
+		return false;
+	}
 
-		if (positionBall.y < rectPlatform.top)
+	bool Ball::IsFarCornerHorizontal(const sf::FloatRect& rect) const
+	{
+		sf::Vector2f const positionBall = sprite.getPosition();
+		if (direction.x > 0)
 		{
-			return std::fabs(positionBall.y - rectPlatform.top) < BALL_SIZE / 2.f;
+			return std::fabs(positionBall.x - (rect.left + rect.width)) < BALL_SIZE / 2.f;
 		}
+		else
+		{
+			return std::fabs(positionBall.x - rect.left ) < BALL_SIZE / 2.f;
+		}
+	}
 
-		return std::fabs(positionBall.y - rectPlatform.top + rectPlatform.height) < BALL_SIZE / 2.f;
+	bool Ball::IsFarCornerVertical(const sf::FloatRect& rect) const
+	{
+		sf::Vector2f const positionBall = sprite.getPosition();
+		if (direction.y > 0)
+		{
+			return std::fabs(positionBall.y - (rect.top + rect.height)) < BALL_SIZE / 2.f;
+		}
+		else
+		{
+			return std::fabs(positionBall.y - rect.top) < BALL_SIZE / 2.f;
+		}
 	}
 }

@@ -17,14 +17,8 @@ namespace ArkanoidGame
 
 		sf::Color backgroundColor = sf::Color::Black;
 		backgroundColor.a = 200; // a means Alfa, opacity
-		 background.setFillColor(backgroundColor);
+		background.setFillColor(backgroundColor);
 
-		gameOverText.setFont(font);
-		gameOverText.setCharacterSize(48);
-		gameOverText.setStyle(sf::Text::Bold);
-		gameOverText.setFillColor(sf::Color::Red);
-		gameOverText.setString("GAME OVER");
-		
 		recordsTableTexts.reserve(MAX_RECORDS_TABLE_SIZE);
 
 		std::multimap<int, std::string> sortedRecordsTable;
@@ -69,6 +63,20 @@ namespace ArkanoidGame
 			text.setFillColor(sf::Color::Green);
 		}
 
+		gameOverText.setFont(font);
+		gameOverText.setCharacterSize(48);
+		gameOverText.setStyle(sf::Text::Bold);
+		if (game.IsGameWinning())
+		{
+			gameOverText.setFillColor(sf::Color::Green);
+			gameOverText.setString("YOU WIN");
+		}
+		else
+		{
+			gameOverText.setFillColor(sf::Color::Red);
+			gameOverText.setString("GAME OVER");
+		}
+
 		hintText.setFont(font);
 		hintText.setCharacterSize(24);
 		hintText.setFillColor(sf::Color::White);
@@ -93,10 +101,17 @@ namespace ArkanoidGame
 	void GameStateGameOverData::Update(float timeDelta)
 	{
 		timeSinceGameOver += timeDelta;
-
-		sf::Color gameOverTextColor = (int)timeSinceGameOver % 2 ? sf::Color::Red : sf::Color::Yellow;
+		sf::Color gameOverTextColor;
+		Game& game = Application::Instance().GetGame();
+		if (game.IsGameWinning())
+		{
+			gameOverTextColor = (int)timeSinceGameOver % 2 ? sf::Color::Green : sf::Color::Yellow;
+		}
+		else 
+		{
+			gameOverTextColor = (int)timeSinceGameOver % 2 ? sf::Color::Red : sf::Color::Yellow;
+		}
 		gameOverText.setFillColor(gameOverTextColor);
-
 	}
 
 	void GameStateGameOverData::Draw(sf::RenderWindow& window)

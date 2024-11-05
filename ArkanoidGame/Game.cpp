@@ -163,4 +163,5 @@ namespace ArkanoidGame
 	{
 		recordsTable[playerId] = std::max(recordsTable[playerId], score);
 	}
+
 }
