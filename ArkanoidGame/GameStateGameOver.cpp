@@ -19,6 +19,12 @@ namespace ArkanoidGame
 		backgroundColor.a = 200; // a means Alfa, opacity
 		background.setFillColor(backgroundColor);
 
+		gameOverText.setFont(font);
+		gameOverText.setCharacterSize(48);
+		gameOverText.setStyle(sf::Text::Bold);
+		gameOverText.setFillColor(sf::Color::Red);
+		gameOverText.setString("GAME OVER");
+		
 		recordsTableTexts.reserve(MAX_RECORDS_TABLE_SIZE);
 
 		std::multimap<int, std::string> sortedRecordsTable;
@@ -28,7 +34,7 @@ namespace ArkanoidGame
 			sortedRecordsTable.insert(std::make_pair(item.second, item.first));
 		}
 
-		bool isSnakeInTable = false;
+		bool isPlayerInTable = false;
 		auto it = sortedRecordsTable.rbegin();
 		for (int i = 0; i < MAX_RECORDS_TABLE_SIZE && it != sortedRecordsTable.rend(); ++i, ++it) // Note, we can do several actions in for action block
 		{
@@ -44,7 +50,7 @@ namespace ArkanoidGame
 			if (it->second == PLAYER_NAME)
 			{
 				text.setFillColor(sf::Color::Green);
-				isSnakeInTable = true;
+				isPlayerInTable = true;
 			}
 			else
 			{
@@ -52,29 +58,15 @@ namespace ArkanoidGame
 			}
 		}
 
-		// If snake is not in table, replace last element with him
-		if (!isSnakeInTable)
+		// If player is not in table, replace last element with him
+		if (!isPlayerInTable)
 		{
 			sf::Text& text = recordsTableTexts.back();
 			std::stringstream sstream;
-			int snakeScores = game.GetRecordByPlayerId(PLAYER_NAME);
-			sstream << MAX_RECORDS_TABLE_SIZE << ". " << PLAYER_NAME << ": " << snakeScores;
+			int playerScores = game.GetRecordByPlayerId(PLAYER_NAME);
+			sstream << MAX_RECORDS_TABLE_SIZE << ". " << PLAYER_NAME << ": " << playerScores;
 			text.setString(sstream.str());
 			text.setFillColor(sf::Color::Green);
-		}
-
-		gameOverText.setFont(font);
-		gameOverText.setCharacterSize(48);
-		gameOverText.setStyle(sf::Text::Bold);
-		if (game.IsGameWinning())
-		{
-			gameOverText.setFillColor(sf::Color::Green);
-			gameOverText.setString("YOU WIN");
-		}
-		else
-		{
-			gameOverText.setFillColor(sf::Color::Red);
-			gameOverText.setString("GAME OVER");
 		}
 
 		hintText.setFont(font);
@@ -101,17 +93,10 @@ namespace ArkanoidGame
 	void GameStateGameOverData::Update(float timeDelta)
 	{
 		timeSinceGameOver += timeDelta;
-		sf::Color gameOverTextColor;
-		Game& game = Application::Instance().GetGame();
-		if (game.IsGameWinning())
-		{
-			gameOverTextColor = (int)timeSinceGameOver % 2 ? sf::Color::Green : sf::Color::Yellow;
-		}
-		else 
-		{
-			gameOverTextColor = (int)timeSinceGameOver % 2 ? sf::Color::Red : sf::Color::Yellow;
-		}
+
+		sf::Color gameOverTextColor = (int)timeSinceGameOver % 2 ? sf::Color::Red : sf::Color::Yellow;
 		gameOverText.setFillColor(gameOverTextColor);
+
 	}
 
 	void GameStateGameOverData::Draw(sf::RenderWindow& window)

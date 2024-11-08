@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Menu.h"
 #include "GameStateData.h"
+#include "Menu.h"
 
 namespace ArkanoidGame
 {

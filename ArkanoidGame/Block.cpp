@@ -1,33 +1,46 @@
 #include "Block.h"
-#include "GameSettings.h"
 #include "Sprite.h"
-#include <cassert>
+#include "GameSettings.h"
+
+#include <assert.h>
 
 namespace
 {
-	const std::string TEXTURE_ID = "Block";
+	const std::string TEXTURE_ID = "platform";
 }
 
 namespace ArkanoidGame
 {
-	void Block::Init()
+	Block::Block(const sf::Vector2f& position, const sf::Color& color)
+		: GameObject(TEXTURES_PATH + TEXTURE_ID + ".png", position, BLOCK_WIDTH, BLOCK_HEIGHT)
 	{
-		assert(texture.loadFromFile(TEXTURES_PATH + TEXTURE_ID + ".png"));
-		InitSprite(sprite, BLOCK_WIDTH, BLOCK_HEGHT, texture);
-		const int randColorR = rand() % 200 + 54;
-		const int randColorG = rand() % 200 + 54;
-		const int randColorB = rand() % 200 + 54;
-		sprite.setColor(sf::Color(randColorR, randColorG, randColorB));
+		sprite.setColor(color);
+	}
+
+	bool Block::GetCollision(std::shared_ptr<Colladiable> collidableObject) const {
+		auto gameObject = std::dynamic_pointer_cast<GameObject>(collidableObject);
+		assert(gameObject);
+		sf::Rect rect = gameObject->GetRect();
+		rect.width *= 1.1;
+		return GetRect().intersects(gameObject->GetRect());
+	}
+
+	void Block::OnHit()
+	{
+		hitCount = 0;
+	}
+
+	bool Block::IsBroken()
+	{
+		return hitCount <= 0;
 	}
 
 	void Block::Update(float timeDelta)
 	{
+
 	}
 
-	void Block::SetPosition(sf::Vector2f position)
-	{
-		position.x = std::clamp(position.x, BLOCK_WIDTH / 2.f, SCREEN_WIDTH - BLOCK_WIDTH / 2.f);
-		position.y = std::clamp(position.y, BLOCK_HEGHT / 2.f, SCREEN_HEGHT * 3.f / 2.f);
-		sprite.setPosition(position);
+	Block::~Block() {
+
 	}
 }

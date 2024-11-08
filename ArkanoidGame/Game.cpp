@@ -1,18 +1,25 @@
 #include "Game.h"
+#include <assert.h>
 #include <algorithm>
+#include "GameStatePlaying.h"
+#include "GameStateGameOver.h"
+#include "GameStatePauseMenu.h"
+#include "GameStateMainMenu.h"
+#include "GameStateRecords.h"
 
 namespace ArkanoidGame
 {
+
 	Game::Game()
 	{
 		// Generate fake records table
 		recordsTable =
 		{
-			{"John", 5},
-			{"Jane", 4 },
-			{"Alice", 3 },
-			{"Bob", 2 },
-			{"Clementine", 1 },
+			{"John", MAX_APPLES / 2},
+			{"Jane", MAX_APPLES / 3 },
+			{"Alice", MAX_APPLES / 4 },
+			{"Bob", MAX_APPLES / 5 },
+			{"Clementine", MAX_APPLES / 5 },
 		};
 
 		stateChangeType = GameStateChangeType::None;
@@ -66,7 +73,7 @@ namespace ArkanoidGame
 		// Initialize new game state if needed
 		if (pendingGameStateType != GameStateType::None)
 		{
-			stateStack.push_back(GameState( pendingGameStateType, pendingGameStateIsExclusivelyVisible ));
+			stateStack.push_back(GameState(pendingGameStateType, pendingGameStateIsExclusivelyVisible));
 		}
 
 		stateChangeType = GameStateChangeType::None;
@@ -163,5 +170,4 @@ namespace ArkanoidGame
 	{
 		recordsTable[playerId] = std::max(recordsTable[playerId], score);
 	}
-
 }

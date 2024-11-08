@@ -1,14 +1,14 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
+#include "GameStateData.h"
 #include "Platform.h"
 #include "Ball.h"
-#include "Block.h"
-#include "GameStateData.h"
 
 namespace ArkanoidGame
 {
 	class Game;
+	class Block;
 
 	class GameStatePlayingData : public GameStateData
 	{
@@ -19,21 +19,25 @@ namespace ArkanoidGame
 		void Draw(sf::RenderWindow& window) override;
 
 	private:
-		void SetPositionEveryBlocks(int indexFirstBlock);
-		bool DeserializeGame();
+		void CreateBlocks();
+		void GetBallInverse(const sf::Vector2f& ballPos, const sf::FloatRect& blockRect, bool& needInverseDirX,
+			bool& needInverseDirY);
 
-	private:
 		// Resources
+		sf::Texture appleTexture;
+		sf::Texture rockTexture;
 		sf::Font font;
+		sf::SoundBuffer eatAppleSoundBuffer;
 		sf::SoundBuffer gameOverSoundBuffer;
 
 		// Game data
 		std::vector<std::shared_ptr<GameObject>> gameObjects;
-		std::vector<std::string> positionsBlocks;
-		unsigned int numBrokenBlocks;
+		std::vector<std::shared_ptr<Block>> blocks;
 
 		// UI data
+		sf::Text scoreText;
 		sf::Text inputHintText;
+		sf::RectangleShape background;
 
 		// Sounds
 		sf::Sound gameOverSound;

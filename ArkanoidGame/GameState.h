@@ -10,10 +10,11 @@ namespace ArkanoidGame
 		MainMenu,
 		Playing,
 		GameOver,
+		GameWin,
 		ExitDialog,
 		Records,
 	};
-	
+
 	class GameState
 	{
 	public:

@@ -1,8 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-#include "GameState.h"
+#include "Sprite.h"
 #include "GameSettings.h"
+#include "GameState.h"
 #include <unordered_map>
 
 namespace ArkanoidGame
@@ -44,9 +45,6 @@ namespace ArkanoidGame
 		int GetRecordByPlayerId(const std::string& playerId) const;
 		void UpdateRecord(const std::string& playerId, int score);
 
-		bool IsGameWinning() const { return gameWinning; };
-		void SetStatusGameAsWinning(bool status) { gameWinning = status; };
-
 		// Add new game state on top of the stack
 		void PushState(GameStateType stateType, bool isExclusivelyVisible);
 
@@ -64,7 +62,6 @@ namespace ArkanoidGame
 		bool pendingGameStateIsExclusivelyVisible = false;
 
 		GameOptions options = GameOptions::Default;
-		bool gameWinning = false;
 		RecordsTable recordsTable;
 	};
 }

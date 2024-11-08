@@ -1,9 +1,12 @@
 #include "GameState.h"
+#include "GameStateData.h"
 #include "GameStatePlaying.h"
 #include "GameStateGameOver.h"
+#include "GameStateGameWin.h"
 #include "GameStatePauseMenu.h"
 #include "GameStateMainMenu.h"
 #include "GameStateRecords.h"
+
 #include <assert.h>
 
 
@@ -30,6 +33,11 @@ namespace ArkanoidGame
 			data = std::make_unique<GameStateGameOverData>();
 			break;
 		}
+		case GameStateType::GameWin:
+		{
+			data = std::make_unique<GameStateGameWinData>();
+			break;
+		}
 		case GameStateType::ExitDialog:
 		{
 			data = std::make_unique<GameStatePauseMenuData>();
@@ -44,8 +52,7 @@ namespace ArkanoidGame
 			assert(false); // We want to know if we forgot to implement new game state
 			break;
 		}
-		if (data)
-		{
+		if (data) {
 			data->Init();
 		}
 	}

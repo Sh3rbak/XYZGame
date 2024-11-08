@@ -1,59 +1,27 @@
 #include "GameStatePlaying.h"
 #include "Application.h"
+#include "Block.h"
 #include "Game.h"
 #include "Text.h"
 #include <assert.h>
 #include <sstream>
-#include <fstream>
-
-namespace
-{
-	const std::string FONT_ID = "Roboto-Regular";
-	const std::string GAMEOVER_SOUND_ID = "Death";
-	const std::string SELECTED_LEVEL = "Level3";
-}
 
 namespace ArkanoidGame
 {
 	void GameStatePlayingData::Init()
-	{
+	{	
 		// Init game resources (terminate if error)
-		assert(font.loadFromFile(FONTS_PATH + FONT_ID + ".ttf"));
-		assert(gameOverSoundBuffer.loadFromFile(SOUNDS_PATH + GAMEOVER_SOUND_ID + ".wav"));
+		assert(font.loadFromFile(FONTS_PATH + "Roboto-Regular.ttf"));
+		assert(gameOverSoundBuffer.loadFromFile(SOUNDS_PATH + "Death.wav"));
 
-		gameObjects.emplace_back(std::make_shared<Platform>());
-		gameObjects.emplace_back(std::make_shared<Ball>());
+		// Init background
+		background.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
+		background.setPosition(0.f, 0.f);
+		background.setFillColor(sf::Color(0, 0, 0));
 
-		if (!DeserializeGame())
-		{
-			positionsBlocks.push_back("-+--+--+-"); // + - block, 
-			positionsBlocks.push_back("+---+---+"); // - - empty
-			positionsBlocks.push_back("--+-+-+--");
-			positionsBlocks.push_back("-+--+--+-");
-			positionsBlocks.push_back("--+-+-+--");
-		}
-		
-		const int indexFirstBlock = static_cast<int>(gameObjects.size());
-		for (auto&& row : positionsBlocks)
-		{
-			for (int i = 0; i < row.size(); ++i)
-			{
-				if (row[i] == '+')
-				{
-					gameObjects.emplace_back(std::make_shared<Block>());
-				}
-			}
-		}
-
-		for (auto&& object : gameObjects)
-		{
-			object->Init();
-		}
-
-		if (indexFirstBlock < gameObjects.size())
-		{
-			SetPositionEveryBlocks(indexFirstBlock);
-		}
+		scoreText.setFont(font);
+		scoreText.setCharacterSize(24);
+		scoreText.setFillColor(sf::Color::Yellow);
 
 		inputHintText.setFont(font);
 		inputHintText.setCharacterSize(24);
@@ -61,7 +29,9 @@ namespace ArkanoidGame
 		inputHintText.setString("Use arrow keys to move, ESC to pause");
 		inputHintText.setOrigin(GetTextOrigin(inputHintText, { 1.f, 0.f }));
 
-		numBrokenBlocks = 0;
+		gameObjects.emplace_back(std::make_shared<Platform>(sf::Vector2f({ SCREEN_WIDTH / 2.0, SCREEN_HEIGHT - PLATFORM_HEIGHT / 2.f })));
+		gameObjects.emplace_back(std::make_shared<Ball>(sf::Vector2f({ SCREEN_WIDTH / 2.f, SCREEN_HEIGHT - PLATFORM_HEIGHT - BALL_SIZE / 2.f } )));
+		CreateBlocks();
 
 		// Init sounds
 		gameOverSound.setBuffer(gameOverSoundBuffer);
@@ -80,89 +50,98 @@ namespace ArkanoidGame
 
 	void GameStatePlayingData::Update(float timeDelta)
 	{
-		for (auto&& object : gameObjects)
-		{
-			object->Update(timeDelta);
+		static auto updateFunctor = [timeDelta](auto obj) { obj->Update(timeDelta); };
+
+		std::for_each(gameObjects.begin(), gameObjects.end(), updateFunctor);
+		std::for_each(blocks.begin(), blocks.end(), updateFunctor);
+
+
+		std::shared_ptr <Platform> platform = std::dynamic_pointer_cast<Platform>(gameObjects[0]);
+		std::shared_ptr<Ball> ball = std::dynamic_pointer_cast<Ball>(gameObjects[1]);
+
+		auto isCollision = platform->CheckCollision(ball);
+
+		bool needInverseDirX = false;
+		bool needInverseDirY = false;
+
+
+		bool hasBrokeOneBlock = false;
+		//remove-erase idiom
+		blocks.erase(
+			std::remove_if(blocks.begin(), blocks.end(),
+				[ball, &hasBrokeOneBlock, &needInverseDirX, &needInverseDirY, this](auto block) {
+					if ((!hasBrokeOneBlock) && block->CheckCollision(ball)) {
+						hasBrokeOneBlock = true;
+						const auto ballPos = ball->GetPosition();
+						const auto blockRect = block->GetRect();
+
+						GetBallInverse(ballPos, blockRect, needInverseDirX, needInverseDirY);
+					}
+					return block->IsBroken();
+				}),
+			blocks.end()
+					);
+		if (needInverseDirX) {
+			ball->InvertDirectionX();
+		}
+		if (needInverseDirY) {
+			ball->InvertDirectionY();
 		}
 
-		Platform* platform = (Platform*)gameObjects[0].get();
-		Ball* ball = (Ball*)gameObjects[1].get();
+		const bool isGameWin = blocks.size() == 0;
+		const bool isGameOver = !isCollision && ball->GetPosition().y > platform->GetRect().top;
+		Game& game = Application::Instance().GetGame();
 
-		const bool isCollisionWithPlatform = ball->ChangeDirectionWhenHit(*platform);
-		
-		for (int i = 2; i < gameObjects.size(); ++i)
-		{
-			Block* block = (Block*)gameObjects[i].get();
-			if (ball->ChangeDirectionWhenHit(*block))
-			{
-				++numBrokenBlocks;
-				gameObjects.erase(gameObjects.begin() + i);
-			}
+		if (isGameWin) {
+			game.PushState(GameStateType::GameWin, false);
 		}
-
-		const bool isGameWinning = gameObjects.size() < 3;
-		const bool isGameFinished = !isCollisionWithPlatform && ball->GetPosition().y + BALL_SIZE / 2.f > SCREEN_HEGHT;
-		if (isGameFinished || isGameWinning)
-		{
+		else if (isGameOver) {
 			gameOverSound.play();
-
-			Game& game = Application::Instance().GetGame();
 			game.PushState(GameStateType::GameOver, false);
-			game.UpdateRecord(PLAYER_NAME, numBrokenBlocks);
-			if (isGameWinning)
-			{
-				game.SetStatusGameAsWinning(true);
-			}
 		}
 	}
 
 	void GameStatePlayingData::Draw(sf::RenderWindow& window)
 	{
-		for (auto&& object : gameObjects)
-		{
-			object->Draw(window);
-		}
+		// Draw background
+		window.draw(background);
+
+		static auto drawFunc = [&window](auto block) { block->Draw(window); };
+		// Draw game objects
+		std::for_each(gameObjects.begin(), gameObjects.end(), drawFunc);
+		std::for_each(blocks.begin(), blocks.end(), drawFunc);
+
+		scoreText.setOrigin(GetTextOrigin(scoreText, { 0.f, 0.f }));
+		scoreText.setPosition(10.f, 10.f);
+		window.draw(scoreText);
 
 		sf::Vector2f viewSize = window.getView().getSize();
 		inputHintText.setPosition(viewSize.x - 10.f, 10.f);
 		window.draw(inputHintText);
 	}
 
-	void GameStatePlayingData::SetPositionEveryBlocks(int indexFirstBlock)
+	void GameStatePlayingData::CreateBlocks() 
 	{
-		int index = indexFirstBlock;
-		const float verticalSpacing = static_cast<float>(SCREEN_HEGHT) / 2.f / (positionsBlocks.size() - 1);
-		for (int row = 0; row < positionsBlocks.size(); ++row)
-		{
-			const float horizontalSpacing = static_cast<float>(SCREEN_WIDTH - BLOCK_WIDTH) / (positionsBlocks[row].size() - 1);
-			for (int column = 0; column < positionsBlocks[row].size(); ++column)
-			{
-				if (positionsBlocks[row][column] == '+')
-				{
-					sf::Vector2f posBlock;
-					posBlock.x = horizontalSpacing * column + BLOCK_WIDTH / 2.f;
-					posBlock.y = verticalSpacing * row + BLOCK_HEGHT / 2.f;
-					Block* block = (Block*)gameObjects[index].get();
-					block->SetPosition(posBlock);
-					++index;
-				}
+		for (int row = 0; row < BLOCKS_COUNT_ROWS; ++row) {
+			for (int col = 0; col < BLOCKS_COUNT_IN_ROW; ++col) {
+				blocks.emplace_back(std::make_shared<Block>(sf::Vector2f({ BLOCK_SHIFT + BLOCK_WIDTH / 2.f + col * (BLOCK_WIDTH + BLOCK_SHIFT), 100.f + row * BLOCK_HEIGHT })));
 			}
 		}
 	}
 
-	bool GameStatePlayingData::DeserializeGame()
-	{
-		std::ifstream file(LEVELS_PATH + SELECTED_LEVEL);
-		if (file.is_open())
+	void GameStatePlayingData::GetBallInverse(const sf::Vector2f& ballPos, const sf::FloatRect& blockRect, bool& needInverseDirX, bool& needInverseDirY) {
+
+		if (ballPos.y > blockRect.top + blockRect.height)
 		{
-			std::string rowMap;
-			while (file >> rowMap)
-			{
-				positionsBlocks.push_back(rowMap);
-			}
-			file.close();
-			return true;
+			needInverseDirY = true;
 		}
-		return false;
+		if (ballPos.x < blockRect.left)
+		{
+			needInverseDirX = true;
+		}
+		if (ballPos.x > blockRect.left + blockRect.width)
+		{
+			needInverseDirX = true;
+		}
 	}
 }
