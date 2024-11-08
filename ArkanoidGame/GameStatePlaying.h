@@ -19,7 +19,7 @@ namespace ArkanoidGame
 		void Draw(sf::RenderWindow& window) override;
 
 	private:
-		void CreateBlocks();
+		void createBlocks();
 		void GetBallInverse(const sf::Vector2f& ballPos, const sf::FloatRect& blockRect, bool& needInverseDirX,
 			bool& needInverseDirY);
 
