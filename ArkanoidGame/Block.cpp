@@ -21,7 +21,7 @@ namespace ArkanoidGame
 		auto gameObject = std::dynamic_pointer_cast<GameObject>(collidableObject);
 		assert(gameObject);
 		sf::Rect rect = gameObject->GetRect();
-		rect.width *= 1.1;
+		rect.width *= 1.1f;
 		return GetRect().intersects(gameObject->GetRect());
 	}
 
@@ -30,7 +30,7 @@ namespace ArkanoidGame
 		hitCount = 0;
 	}
 
-	bool Block::IsBroken()
+	bool Block::IsBroken() const
 	{
 		return hitCount <= 0;
 	}
@@ -44,16 +44,12 @@ namespace ArkanoidGame
 
 	}
 	
-
-
 	SmoothDestroyableBlock::SmoothDestroyableBlock(const sf::Vector2f& position, const sf::Color& color)
 		: Block(position, color)
 		, color(color)
 
 	{
 	}
-
-
 
 	void SmoothDestroyableBlock::Update(float timeDelta)
 	{
@@ -84,7 +80,7 @@ namespace ArkanoidGame
 
 	void SmoothDestroyableBlock::EachTickAction(float deltaTime)
 	{
-		color.a = 255 * currentTime_ / destroyTime_;
+		color.a = static_cast<sf::Uint8>(255 * currentTime_ / destroyTime_);
 		sprite.setColor(color);
 	}
 

@@ -16,7 +16,7 @@ namespace ArkanoidGame
 		virtual ~Block();
 		bool GetCollision(std::shared_ptr<Colladiable> collidableObject) const override;
 		void Update(float timeDelta) override;
-		bool IsBroken();
+		bool IsBroken() const;
 	};
 
 	class SmoothDestroyableBlock : public Block, public IDelayedAction
@@ -44,5 +44,7 @@ namespace ArkanoidGame
 			++i;
 		};
 	};
+
+
 }
 

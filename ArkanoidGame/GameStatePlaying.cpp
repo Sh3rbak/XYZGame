@@ -1,6 +1,8 @@
 #include "GameStatePlaying.h"
 #include "Application.h"
 #include "Block.h"
+#include "FewHitPointsBlock.h"
+#include "GlassBlock.h"
 #include "Game.h"
 #include "Text.h"
 #include <assert.h>
@@ -133,6 +135,18 @@ namespace ArkanoidGame
 			blocks.emplace_back(std::make_shared<UnbreackableBlock>(sf::Vector2f({ BLOCK_SHIFT + BLOCK_WIDTH / 2.f + col * (BLOCK_WIDTH + BLOCK_SHIFT), 100.f + row * BLOCK_HEIGHT })));
 		}
 
+		++row;
+		for (int col = BLOCKS_COUNT_IN_ROW - 1; col >= 0; --col) {
+			blocks.emplace_back(std::make_shared<FewHitPointsBlock>(sf::Vector2f({ BLOCK_SHIFT + BLOCK_WIDTH / 2.f + col * (BLOCK_WIDTH + BLOCK_SHIFT), 100.f + row * BLOCK_HEIGHT }), NUM_HITS_OF_BLOCK));
+		}
+
+		for (int i = 0; i < 3; ++i)
+		{
+			++row;
+			for (int col = 0; col < BLOCKS_COUNT_IN_ROW; ++col) {
+				blocks.emplace_back(std::make_shared<GlassBlock>(sf::Vector2f({ BLOCK_SHIFT + BLOCK_WIDTH / 2.f + col * (BLOCK_WIDTH + BLOCK_SHIFT), 100.f + row * BLOCK_HEIGHT })));
+			}
+		}
 	}
 
 	void GameStatePlayingData::GetBallInverse(const sf::Vector2f& ballPos, const sf::FloatRect& blockRect, bool& needInverseDirX, bool& needInverseDirY) {
