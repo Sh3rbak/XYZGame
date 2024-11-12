@@ -13,7 +13,7 @@ namespace ArkanoidGame
 		sf::Text hintText; // Visible when child item is selected
 		Orientation childrenOrientation = Orientation::Vertical;
 		Alignment childrenAlignment = Alignment::Min;
-		float childrenSpacing;
+		float childrenSpacing = 0;
 
 		sf::Color selectedColor = sf::Color::Yellow;
 		sf::Color deselectedColor = sf::Color::White;
@@ -31,7 +31,7 @@ namespace ArkanoidGame
 	public:
 		void Init(const MenuItem& item);
 
-		void Update(float deltaTime);
+		//void Update(float deltaTime);
 
 		void Draw(sf::RenderWindow& window, sf::Vector2f position, sf::Vector2f origin);
 

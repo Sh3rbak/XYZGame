@@ -3,6 +3,16 @@
 
 namespace ArkanoidGame
 {
+	class GameWorld {
+	private:
+		GameWorld() = default;
+
+	public:
+		static GameWorld& Instance() {
+			static GameWorld gameWorld;
+			return gameWorld;
+		}
+
 	// Resources path
 	const std::string RESOURCES_PATH = "Resources/";
 	const std::string TEXTURES_PATH = RESOURCES_PATH + "Textures/";
@@ -32,8 +42,11 @@ namespace ArkanoidGame
 	const unsigned int NUM_HITS_OF_BLOCK = 3;
 
 	const int MAX_RECORDS_TABLE_SIZE = 5;
-	extern const char* PLAYER_NAME; // We need to define this constant in some CPP
+	const char* PLAYER_NAME = "Player";
 
 	const std::string GAME_NAME = "ArkanoidGame";
 	const float BREAK_DELAY = 1.f;
+	};
 }
+
+#define SETTINGS GameWorld::Instance()
