@@ -163,11 +163,11 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Block.cpp" />
-    <ClCompile Include="FewHitPointsBlock.cpp" />
+    <ClCompile Include="BlockFactory.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="GameStateGameWin.cpp" />
-    <ClCompile Include="GlassBlock.cpp" />
+    <ClCompile Include="LevelLoader.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -179,19 +179,20 @@
     <ClCompile Include="GameStateRecords.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Text.cpp" />
+    <ClCompile Include="ThreeHitBlock.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Block.h" />
+    <ClInclude Include="BlockFactory.h" />
     <ClInclude Include="Collidable.h" />
-    <ClInclude Include="FewHitPointsBlock.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="GameStateData.h" />
     <ClInclude Include="GameStateGameWin.h" />
-    <ClInclude Include="GlassBlock.h" />
     <ClInclude Include="IDelayedAction.h" />
+    <ClInclude Include="LevelLoader.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="randomizer.h" />
     <ClInclude Include="Sprite.h" />
@@ -204,6 +205,7 @@
     <ClInclude Include="GameStateRecords.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Text.h" />
+    <ClInclude Include="ThreeHitBlock.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
