@@ -28,6 +28,7 @@ namespace ArkanoidGame
 	void Block::OnHit()
 	{
 		hitCount = 0;
+		Emit();
 	}
 
 	bool Block::IsBroken() const
@@ -76,6 +77,7 @@ namespace ArkanoidGame
 	void SmoothDestroyableBlock::FinalAction()
 	{
 		--hitCount;
+		Emit();
 	}
 
 	void SmoothDestroyableBlock::EachTickAction(float deltaTime)

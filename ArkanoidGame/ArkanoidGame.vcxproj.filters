@@ -144,5 +144,8 @@
     <ClInclude Include="ThreeHitBlock.h">
       <Filter>Sources</Filter>
     </ClInclude>
+    <ClInclude Include="IObserver.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
