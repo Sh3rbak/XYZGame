@@ -6,14 +6,13 @@ namespace ArkanoidGame
 {
 	class GameWorld {
 	private:
-
 		GameWorld() = default;
+
 	public:
 		static GameWorld& Instance() {
 			static GameWorld gameWorld;
 			return gameWorld;
 		}
-
 
 		// Resources path
 		const std::string RESOURCES_PATH = "Resources/";
@@ -47,6 +46,8 @@ namespace ArkanoidGame
 
 		const std::string GAME_NAME = "ArkanoidGame";
 		const float BREAK_DELAY = 1.f;
+
+		const unsigned int POINTS_FOR_BLOCK = 5;
 	};
 }
 

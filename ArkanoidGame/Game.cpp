@@ -6,6 +6,7 @@
 #include "GameStatePauseMenu.h"
 #include "GameStateMainMenu.h"
 #include "GameStateRecords.h"
+#include "ScoreManager.h"
 
 namespace ArkanoidGame
 {
@@ -188,6 +189,8 @@ namespace ArkanoidGame
 
 	void Game::LooseGame()
 	{
+		UpdateRecord("Player", ScoreManager::Instance().GetScore());
+		ScoreManager::Instance().ClearScore();
 		PushState(GameStateType::GameOver, false);
 	}
 

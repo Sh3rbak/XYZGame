@@ -67,6 +67,9 @@
     <ClCompile Include="ThreeHitBlock.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="ScoreManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -145,6 +148,9 @@
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="IObserver.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreManager.h">
       <Filter>Sources</Filter>
     </ClInclude>
   </ItemGroup>

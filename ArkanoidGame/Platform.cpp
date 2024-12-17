@@ -12,7 +12,7 @@ namespace
 namespace ArkanoidGame
 {
 	Platform::Platform(const sf::Vector2f& position)
-		: GameObject(SETTINGS.TEXTURES_PATH + TEXTURE_ID + ".png", position, SETTINGS.PLATFORM_WIDTH, SETTINGS.PLATFORM_HEIGHT)
+		: GameObject(SETTINGS.TEXTURES_PATH + TEXTURE_ID + ".png", position, (float)SETTINGS.PLATFORM_WIDTH, (float)SETTINGS.PLATFORM_HEIGHT)
 	{}
 
 	void Platform::Update(float timeDelta)
@@ -45,11 +45,11 @@ namespace ArkanoidGame
 		const auto rect = sprite.getGlobalBounds();
 		const auto ballPos = ball->GetPosition();
 		if (ballPos.x < rect.left) {
-			return sqr(ballPos.x - rect.left) + sqr(ballPos.y - rect.top) < sqr(SETTINGS.BALL_SIZE / 2.0);
+			return sqr(ballPos.x - rect.left) + sqr(ballPos.y - rect.top) < sqr(SETTINGS.BALL_SIZE / 2.0f);
 		}
 
 		if (ballPos.x > rect.left + rect.width) {
-			return sqr(ballPos.x - rect.left - rect.width) + sqr(ballPos.y - rect.top) < sqr(SETTINGS.BALL_SIZE / 2.0);
+			return sqr(ballPos.x - rect.left - rect.width) + sqr(ballPos.y - rect.top) < sqr(SETTINGS.BALL_SIZE / 2.0f);
 		}
 
 		return std::fabs(ballPos.y - rect.top) <= SETTINGS.BALL_SIZE / 2.0;

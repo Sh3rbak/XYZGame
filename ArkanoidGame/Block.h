@@ -12,6 +12,7 @@ namespace ArkanoidGame
 	protected:
 		void OnHit();
 		int hitCount = 1;
+		int points = 0;
 	public:
 		Block(const sf::Vector2f& position, const sf::Color& color = sf::Color::Green);
 		virtual ~Block();
@@ -43,7 +44,7 @@ namespace ArkanoidGame
 		void Update(float) {
 			int i = 0;
 			++i;
-		};
+		}
 	};
 
 

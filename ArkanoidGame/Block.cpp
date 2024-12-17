@@ -1,6 +1,7 @@
 #include "Block.h"
 #include "Sprite.h"
 #include "GameSettings.h"
+#include "ScoreManager.h"
 
 #include <assert.h>
 
@@ -12,9 +13,10 @@ namespace
 namespace ArkanoidGame
 {
 	Block::Block(const sf::Vector2f& position, const sf::Color& color)
-		: GameObject(SETTINGS.TEXTURES_PATH + TEXTURE_ID + ".png", position, SETTINGS.BLOCK_WIDTH, SETTINGS.BLOCK_HEIGHT)
+		: GameObject(SETTINGS.TEXTURES_PATH + TEXTURE_ID + ".png", position, (float)SETTINGS.BLOCK_WIDTH, (float)SETTINGS.BLOCK_HEIGHT)
 	{
 		sprite.setColor(color);
+		points = SETTINGS.POINTS_FOR_BLOCK;
 	}
 
 	bool Block::GetCollision(std::shared_ptr<Colladiable> collidableObject) const {
@@ -28,6 +30,7 @@ namespace ArkanoidGame
 	void Block::OnHit()
 	{
 		hitCount = 0;
+		ScoreManager::Instance().AddPoints(points);
 		Emit();
 	}
 
@@ -72,6 +75,7 @@ namespace ArkanoidGame
 	void SmoothDestroyableBlock::OnHit()
 	{
 		StartTimer(SETTINGS.BREAK_DELAY);
+		ScoreManager::Instance().AddPoints(points);
 	}
 
 	void SmoothDestroyableBlock::FinalAction()

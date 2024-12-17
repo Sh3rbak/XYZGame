@@ -58,5 +58,7 @@ namespace ArkanoidGame
 		LevelLoader levelLoder;
 		int currentLevel = 0;
 
+		//Score
+		int score = 0;
 	};
 }

@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "Text.h"
 #include "ThreeHitBlock.h"
+#include "ScoreManager.h"
 
 #include <assert.h>
 #include <sstream>
@@ -22,7 +23,7 @@ namespace ArkanoidGame
 		factories.emplace(BlockType::Unbreackable, std::make_unique<UnbreackableBlockFactory>());
 
 		// Init background
-		background.setSize(sf::Vector2f(SETTINGS.SCREEN_WIDTH, SETTINGS.SCREEN_HEIGHT));
+		background.setSize(sf::Vector2f((float)SETTINGS.SCREEN_WIDTH, (float)SETTINGS.SCREEN_HEIGHT));
 		background.setPosition(0.f, 0.f);
 		background.setFillColor(sf::Color(0, 0, 0));
 
@@ -40,6 +41,7 @@ namespace ArkanoidGame
 		auto ball = std::make_shared<Ball>(sf::Vector2f({ SETTINGS.SCREEN_WIDTH / 2.f, SETTINGS.SCREEN_HEIGHT - SETTINGS.PLATFORM_HEIGHT - SETTINGS.BALL_SIZE / 2.f }));
 		ball->AddObserver(weak_from_this());
 		gameObjects.emplace_back(ball);
+
 		createBlocks();
 
 		// Init sounds
@@ -96,6 +98,8 @@ namespace ArkanoidGame
 		if (needInverseDirY) {
 			ball->InvertDirectionY();
 		}
+		score = ScoreManager::Instance().GetScore();
+		scoreText.setString("Score: " + std::to_string(score));
 	}
 
 	void GameStatePlayingData::Draw(sf::RenderWindow& window)
@@ -159,6 +163,7 @@ namespace ArkanoidGame
 
 
 			blocks.emplace_back(factories.at(blockType)->CreateBlock(position));
+			blocks.back()->AddObserver(self);
 		}
 
 		for (const auto& pair : factories)
@@ -187,6 +192,7 @@ namespace ArkanoidGame
 	{
 		if (auto block = std::dynamic_pointer_cast<Block>(observable); block) {
 			--breackableBlocksCount;
+
 			Game& game = Application::Instance().GetGame();
 			if (breackableBlocksCount == 0) {
 				game.LoadNextLevel();

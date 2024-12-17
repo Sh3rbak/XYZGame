@@ -1,5 +1,6 @@
 #include "ThreeHitBlock.h"
 #include "GameSettings.h"
+#include "ScoreManager.h"
 
 
 namespace ArkanoidGame {
@@ -17,6 +18,7 @@ namespace ArkanoidGame {
 		if (hitCount == 0) {
 			hitCount = 1;
 			StartTimer(SETTINGS.BREAK_DELAY);
+			ScoreManager::Instance().AddPoints(SETTINGS.POINTS_FOR_BLOCK * 3);
 		}
 	}
 

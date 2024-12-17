@@ -15,8 +15,6 @@ namespace ArkanoidGame {
 		void OnHit() override;
 
 		void StageChange();
-
-
 	};
 }
 
